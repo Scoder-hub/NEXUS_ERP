@@ -13,7 +13,7 @@
 | TASK-002 | 工艺路线设计器 — 基础阶段               | ✅ 全部完成                     | 2026-07-10 |
 | TASK-003 | 工艺路线版本管理                        | 🟡 QA 通过（2 Bug 延期至 v0.2） | 2026-07-11 |
 | TASK-004 | 自定义工序 + 工序分类                   | ✅ 全部完成                      | 2026-07-11 |
-| TASK-005 | 质检节点                                | ✅ PM+UX+架构师+后端完成        | 2026-07-11 |
+| TASK-005 | 质检节点                                | ✅ 全部完成                      | 2026-07-11 |
 | TASK-006 | 生产管理 — 工单管理 + 工序流转          | ✅ PM+UX+架构师+后端完成        | 2026-07-11 |
 | TASK-007 | 生产管理 — 批次追溯 + 在制品看板        | ✅ PM+UX+架构师完成             | 2026-07-11 |
 | TASK-008 | 库存管理 — 原材料                       | ✅ UX设计师完成                 | 2026-07-11 |
@@ -665,6 +665,49 @@
 
 - 前端开发者需接着实现：`InspectionNode.tsx` / `InspectionEdge.tsx` / `InspectionParamForm.tsx` / `inspectionValidation.ts` / CanvasView/ProcessPanel/ParamPanel 改造 / Store 扩展
 - 旧数据完全兼容：RouteEdge.type 可选，缺失时 React Flow 回退默认 smoothstep
+
+---
+
+### 前端开发者 — 完成 ✅
+
+**状态**: 🟢 TASK-005 前端编码完成（2026-07-11）
+
+**完成内容**:
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/pages/RouteEditor/nodes/InspectionNode.tsx` | 新增 | 质检节点菱形组件（CSS transform:rotate(45deg)），3个 Handle（输入+通过+不通过） |
+| `src/pages/RouteEditor/edges/InspectionEdge.tsx` | 新增 | 质检连线组件（绿色✅/红色❌连线+Bezier路径+标签渲染） |
+| `src/components/ui/InspectionParamForm.tsx` | 新增 | 检测项目配置表单（名称/标准值/单位/偏差类型，最多10项） |
+| `src/lib/utils/inspectionValidation.ts` | 新增 | 校验工具（validateInspectionNodes / validateInspectionItems / getNextInspectionNodeName） |
+| `src/pages/RouteEditor/ProcessPanel.tsx` | 修改 | 新增「特殊节点」分组（🔍质检节点可拖拽） |
+| `src/pages/RouteEditor/CanvasView.tsx` | 修改 | 注册 inspection nodeTypes + edgeTypes；拖拽落点区分 process vs inspection |
+| `src/pages/RouteEditor/ParamPanel.tsx` | 修改 | 选中质检节点时展示 InspectionParamForm |
+| `src/stores/routeStore.ts` | 修改 | addInspectionNode action + validateInspectionNodes 校验 + onConnect 改造（inspection sourceHandle 自动识别） |
+| `src/pages/RouteEditor/index.tsx` | 修改 | 集成质检节点拖拽、保存前校验警告弹窗 |
+| `src/styles/global.css` | 修改 | 新增质检节点/连线/表单样式（~360行） |
+
+**验证链**:
+
+- ✅ 全部新增文件 < 300 行（最大 169 行）
+- ✅ 文件路径一致性检查通过（explore 工具验证）
+- ✅ 旧数据兼容：RouteEdge.type 缺失时 React Flow 回退默认 smoothstep
+- ✅ Design Token 系统：琥珀色警告、绿色通过、红色不通过
+- ⚠️ tsc 编译需本地 Node 环境
+
+**关键决策**:
+
+- 菱形节点通过外层容器 `transform: rotate(45deg)` + 内部内容 `rotate(-45deg)` 实现，保证文字可读
+- Handle 位置：左侧输入（Position.Left），右侧上方通过（id=pass），右侧下方不通过（id=fail）
+- 质检节点保存校验在 `handleSave` 回调中触发，不通过时显示警告弹窗并阻止保存
+- `onConnect` 根据 `sourceHandle === 'pass'/'fail'` 自动设置 edge type='inspection' 和 data
+- 连线标签使用 React Flow 的 `EdgeLabelRenderer` + `getBezierPath` 计算标签位置
+
+**下游需关注**:
+
+- 审查员需重点检查：React Flow nodeTypes/edgeTypes 注册正确性、旧数据兼容性、onConnect 改造的 sourceHandle 逻辑
+- QA 需关注：质检节点拖拽→连接→参数配置→保存校验全流程、通过/不通过连线标签显示
+- 回滚方案：`git revert` 当前 commit 可安全回退
 
 ---
 
