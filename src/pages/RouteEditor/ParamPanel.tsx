@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import type { Node } from "@xyflow/react";
 import type { ProcessLibraryItem } from "../../lib/types/route";
+import type { InspectionItem } from "../../lib/types/route";
+import InspectionParamForm from "../../components/ui/InspectionParamForm";
 
 interface ParamPanelProps {
   node: Node | null;
@@ -18,11 +20,20 @@ export default function ParamPanel({
   readonly = false,
 }: ParamPanelProps) {
   const [params, setParams] = useState<Record<string, any>>({});
-  const proc = node
-    ? processLibrary.find((p) => p.id === node.data.processId)
-    : null;
+  const [inspectionItems, setInspectionItems] = useState<InspectionItem[]>([]);
+  const isInspectionNode = node?.type === "inspection";
+  const proc = isInspectionNode
+    ? null
+    : node
+      ? processLibrary.find((p) => p.id === node.data.processId)
+      : null;
 
   useEffect(() => {
+    if (isInspectionNode) {
+      const items = (node?.data?.inspectionItems as InspectionItem[]) || [];
+      setInspectionItems(items);
+      return;
+    }
     if (node?.data?.params && Object.keys(node.data.params).length > 0) {
       setParams(node.data.params);
     } else if (proc?.defaultParams) {
@@ -39,7 +50,7 @@ export default function ParamPanel({
     } else {
       setParams({});
     }
-  }, [node?.id, proc?.id]);
+  }, [node?.id, isInspectionNode ? null : proc?.id]);
 
   const handleParamChange = useCallback((key: string, value: any) => {
     setParams((prev) => ({ ...prev, [key]: value }));
@@ -47,9 +58,13 @@ export default function ParamPanel({
 
   const handleConfirm = useCallback(() => {
     if (node) {
-      onParamsChange(node.id, params);
+      if (isInspectionNode) {
+        onParamsChange(node.id, { inspectionItems });
+      } else {
+        onParamsChange(node.id, params);
+      }
     }
-  }, [node, params, onParamsChange]);
+  }, [node, params, inspectionItems, onParamsChange, isInspectionNode]);
 
   if (!node) {
     return (
@@ -75,6 +90,50 @@ export default function ParamPanel({
             {node.type === "start" ? "起点" : "终点"}无需配置参数
           </p>
         </div>
+      </aside>
+    );
+  }
+
+  if (isInspectionNode) {
+    return (
+      <aside className="param-panel">
+        <div className="param-panel__header">
+          <span className="param-panel__title">质检参数配置</span>
+          <button className="param-panel__close" onClick={onClose}>
+            ✕
+          </button>
+        </div>
+        <div className="param-panel__body">
+          <div className="param-panel__field">
+            <label className="param-panel__label">节点名称</label>
+            <input
+              className="param-panel__input"
+              value={(node.data.name as string) || ""}
+              disabled
+            />
+          </div>
+          <InspectionParamForm
+            items={inspectionItems}
+            onChange={setInspectionItems}
+            readonly={readonly}
+          />
+        </div>
+        {!readonly && (
+          <div className="param-panel__footer">
+            <button
+              className="param-panel__btn param-panel__btn--confirm"
+              onClick={handleConfirm}
+            >
+              确认
+            </button>
+            <button
+              className="param-panel__btn param-panel__btn--cancel"
+              onClick={onClose}
+            >
+              取消
+            </button>
+          </div>
+        )}
       </aside>
     );
   }

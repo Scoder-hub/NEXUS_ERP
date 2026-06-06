@@ -17,6 +17,7 @@ import {
   applyEdgeChanges,
   addEdge,
 } from "@xyflow/react";
+import { INSPECTION_HANDLES } from "../lib/types/route";
 
 interface RouteState {
   /* ── 列表页 ── */
@@ -50,9 +51,11 @@ interface RouteState {
   deleteRoute: (id: number) => Promise<void>;
   fetchProcessLibrary: () => Promise<void>;
   addNode: (processId: number, position: { x: number; y: number }) => void;
+  addInspectionNode: (position: { x: number; y: number }) => void;
   removeSelected: () => void;
   selectNode: (nodeId: string | null) => void;
   updateNodeParams: (nodeId: string, params: Record<string, any>) => void;
+  validateInspectionNodes: () => boolean;
   resetEditor: () => void;
   setListFilter: (filter: { status?: string; search?: string }) => void;
 
@@ -103,10 +106,26 @@ export const useRouteStore = create<RouteState>((set, get) => ({
   },
 
   onConnect: (connection) => {
-    set({
-      edges: addEdge({ ...connection, type: "smoothstep" }, get().edges),
-      isDirty: true,
-    });
+    const { sourceHandle } = connection;
+    if (sourceHandle === INSPECTION_HANDLES.PASS || sourceHandle === INSPECTION_HANDLES.FAIL) {
+      const isPass = sourceHandle === INSPECTION_HANDLES.PASS;
+      set({
+        edges: addEdge({
+          ...connection,
+          type: "inspection",
+          data: {
+            label: isPass ? "pass" : "fail",
+            labelText: isPass ? "✅ 通过" : "❌ 不通过",
+          },
+        }, get().edges),
+        isDirty: true,
+      });
+    } else {
+      set({
+        edges: addEdge({ ...connection, type: "smoothstep" }, get().edges),
+        isDirty: true,
+      });
+    }
   },
 
   /* ── 加载工序库 ── */
@@ -235,6 +254,25 @@ export const useRouteStore = create<RouteState>((set, get) => ({
     set({ nodes: [...nodes, newNode], isDirty: true });
   },
 
+  /* ── 添加质检节点 ── */
+  addInspectionNode: (position: { x: number; y: number }) => {
+    const { nodes } = get();
+    const inspectionCount = nodes.filter((n) => n.type === "inspection").length;
+    const id = `node_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    const newNode: Node = {
+      id,
+      type: "inspection",
+      position,
+      data: {
+        name: `质检 ${inspectionCount + 1}`,
+        params: {},
+        inspectionItems: [],
+        isValid: false,
+      },
+    };
+    set({ nodes: [...nodes, newNode], isDirty: true });
+  },
+
   /* ── 删除选中 ── */
   removeSelected: () => {
     const { nodes, edges } = get();
@@ -260,14 +298,39 @@ export const useRouteStore = create<RouteState>((set, get) => ({
   /* ── 更新节点参数 ── */
   updateNodeParams: (nodeId: string, params: Record<string, any>) => {
     const { nodes } = get();
+    const inspectionItems = params.inspectionItems as any[] | undefined;
     set({
       nodes: nodes.map((n) =>
         n.id === nodeId
-          ? { ...n, data: { ...n.data, params, isValid: true } }
+          ? {
+              ...n,
+              data: {
+                ...n.data,
+                params,
+                isValid: true,
+                ...(inspectionItems ? { inspectionItems } : {}),
+              },
+            }
           : n,
       ),
       isDirty: true,
     });
+  },
+
+  /* ── 质检节点保存前校验 ── */
+  validateInspectionNodes: () => {
+    const { nodes, edges } = get();
+    const invalid = nodes.filter((n) => {
+      if (n.type !== "inspection") return false;
+      const outEdges = edges.filter((e) => e.source === n.id);
+      return outEdges.length < 2;
+    });
+    if (invalid.length > 0) {
+      // 高亮第一个无效节点
+      console.warn("质检节点出线不足:", invalid.map((n) => n.data.name));
+      return false;
+    }
+    return true;
   },
 
   /* ── 重置编辑器 ── */
