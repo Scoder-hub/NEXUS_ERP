@@ -1,0 +1,10 @@
+node_modules/
+dist/
+dist-electron/
+.vite/
+*.db
+*.sqlite
+.env
+.env.local
+.DS_Store
+*.log
