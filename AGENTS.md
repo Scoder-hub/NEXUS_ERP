@@ -40,3 +40,15 @@
 
 七角色串联：PM → UX 设计师 → 架构师 → 开发者 → 审查员 → QA → DevOps
 每个角色完成后输出交接摘要到 `docs/dev-tasks.md`
+
+## 自进化
+
+项目使用 `.learnings/` 目录追踪经验教训和错误记录，支持跨会话持续改进：
+
+| 文件 | 用途 | 触发时机 |
+|------|------|---------|
+| `.learnings/LEARNINGS.md` | 修正/洞察/最佳实践 | 用户纠正、发现更优方案、知识过时 |
+| `.learnings/ERRORS.md` | 命令失败/异常 | 操作失败、工具报错 |
+| `.learnings/FEATURE_REQUESTS.md` | 用户需求 | 用户提出新功能 |
+
+调用 `/self-improvement` skill 可以快速查阅格式指南和记录规则。
