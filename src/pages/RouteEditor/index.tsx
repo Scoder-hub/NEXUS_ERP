@@ -1,15 +1,22 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRouteStore } from "../../stores/routeStore";
 import { useRouteVersionStore } from "../../stores/routeVersionStore";
 import { parseVersion } from "../../lib/utils/version";
 import type { Node } from "@xyflow/react";
+import type {
+  ProcessLibraryItem,
+  CreateCustomProcessData,
+  UpdateCustomProcessData,
+} from "../../lib/types/route";
 import ProcessPanel from "./ProcessPanel";
 import CanvasView from "./CanvasView";
 import ParamPanel from "./ParamPanel";
 import SaveConfirmDialog from "./dialogs/SaveConfirmDialog";
 import VersionHistoryDialog from "./dialogs/VersionHistoryDialog";
 import VersionCompareView from "./dialogs/VersionCompareView";
+import ProcessManageDialog from "./ProcessManageDialog";
+import ProcessEditDialog from "./ProcessEditDialog";
 
 /** 编辑器初始化 Hook */
 function useInit(id: string | undefined) {
@@ -67,6 +74,19 @@ export default function RouteEditor() {
     compareVersions: s.compareVersions,
   }));
 
+  const processMgmt = useRouteStore((s) => ({
+    manageDialogOpen: s.manageDialogOpen,
+    editDialogOpen: s.editDialogOpen,
+    editingProcess: s.editingProcess,
+    processSaving: s.processSaving,
+    setManageDialogOpen: s.setManageDialogOpen,
+    setEditDialogOpen: s.setEditDialogOpen,
+    createCustomProcess: s.createCustomProcess,
+    updateCustomProcess: s.updateCustomProcess,
+    toggleProcessActive: s.toggleProcessActive,
+    deleteCustomProcess: s.deleteCustomProcess,
+  }));
+
   // ── Callbacks ──
   const handleNodeClick = useCallback(
     (_e: any, n: Node) => editor.selectNode(n.id), [],
@@ -83,6 +103,56 @@ export default function RouteEditor() {
   const handleBack = useCallback(
     () => navigate("/routes"), [navigate],
   );
+
+  // ── 工序管理 Callbacks ──
+  const handleManageClick = useCallback(() => {
+    processMgmt.setManageDialogOpen(true);
+  }, []);
+
+  const handleQuickEdit = useCallback((proc: ProcessLibraryItem) => {
+    processMgmt.setEditDialogOpen(true, proc);
+  }, []);
+
+  const handleQuickToggleActive = useCallback((id: number, isActive: boolean) => {
+    processMgmt.toggleProcessActive(id, isActive);
+  }, []);
+
+  const handleCreateProcess = useCallback(() => {
+    processMgmt.setEditDialogOpen(true, null);
+    processMgmt.setManageDialogOpen(false);
+  }, []);
+
+  const handleEditProcess = useCallback((proc: ProcessLibraryItem) => {
+    processMgmt.setEditDialogOpen(true, proc);
+  }, []);
+
+  const handleSaveProcess = useCallback(
+    (data: CreateCustomProcessData | UpdateCustomProcessData) => {
+      if ("id" in data) {
+        processMgmt.updateCustomProcess(data);
+      } else {
+        processMgmt.createCustomProcess(data);
+      }
+    },
+    [],
+  );
+
+  const [deleteBlockedInfo, setDeleteBlockedInfo] = useState<{
+    name: string;
+    refs: { id: number; name: string; version: string }[];
+  } | null>(null);
+
+  const handleDeleteProcess = useCallback(async (id: number) => {
+    const proc = editor.processLibrary.find((p) => p.id === id);
+    const result = await processMgmt.deleteCustomProcess(id);
+    if (!result.success && result.referencedBy && proc) {
+      setDeleteBlockedInfo({ name: proc.name, refs: result.referencedBy });
+    }
+  }, []);
+
+  const existingCodes = editor.processLibrary
+    .filter((p) => p.category === "custom")
+    .map((p) => p.code);
 
   const handleSave = useCallback(() => {
     version.setSaveChangeDescription?.("");
@@ -203,6 +273,9 @@ export default function RouteEditor() {
           <ProcessPanel
             library={editor.processLibrary} loading={editor.libraryLoading}
             onSearch={() => {}} onDragStart={() => {}}
+            onManageClick={handleManageClick}
+            onQuickEdit={handleQuickEdit}
+            onQuickToggleActive={handleQuickToggleActive}
           />
         )}
         {editor.editorLoading ? (
@@ -258,6 +331,57 @@ export default function RouteEditor() {
           onClose={() => version.setHistoryDialogOpen?.(false)}
           onRollback={handleRollback} onCompare={handleCompare}
         />
+      )}
+
+      {/* 工序管理弹窗 */}
+      <ProcessManageDialog
+        open={processMgmt.manageDialogOpen}
+        onClose={() => processMgmt.setManageDialogOpen(false)}
+        library={editor.processLibrary}
+        loading={editor.libraryLoading}
+        onCreate={handleCreateProcess}
+        onEdit={handleEditProcess}
+        onToggleActive={handleQuickToggleActive}
+        onDelete={handleDeleteProcess}
+      />
+
+      {/* 工序编辑弹窗 */}
+      <ProcessEditDialog
+        open={processMgmt.editDialogOpen}
+        process={processMgmt.editingProcess}
+        existingCodes={existingCodes}
+        onSave={handleSaveProcess}
+        onCancel={() => processMgmt.setEditDialogOpen(false)}
+        saving={processMgmt.processSaving}
+      />
+
+      {/* 删除被阻止提示弹窗 */}
+      {deleteBlockedInfo && (
+        <div className="dialog-overlay" onClick={() => setDeleteBlockedInfo(null)}>
+          <div className="dialog" onClick={(e) => e.stopPropagation()} style={{ width: 420 }}>
+            <h3 className="dialog__title">⛔ 无法删除</h3>
+            <div className="dialog__body">
+              <p style={{ marginBottom: "var(--space-3)" }}>
+                工序「{deleteBlockedInfo.name}」正被以下路线使用：
+              </p>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+                {deleteBlockedInfo.refs.map((r) => (
+                  <li key={r.id} style={{ padding: "4px 0", color: "var(--color-text-secondary)" }}>
+                    • {r.name} ({r.version})
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="dialog__footer">
+              <button
+                className="dialog__btn dialog__btn--cancel"
+                onClick={() => setDeleteBlockedInfo(null)}
+              >
+                我知道了
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

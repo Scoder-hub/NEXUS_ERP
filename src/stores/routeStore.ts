@@ -3,6 +3,9 @@ import {
   type ProcessLibraryItem,
   type RouteListItem,
   type RouteDetail,
+  type CreateCustomProcessData,
+  type UpdateCustomProcessData,
+  type DeleteProcessResult,
 } from "../lib/types/route";
 import {
   type Node,
@@ -52,6 +55,18 @@ interface RouteState {
   updateNodeParams: (nodeId: string, params: Record<string, any>) => void;
   resetEditor: () => void;
   setListFilter: (filter: { status?: string; search?: string }) => void;
+
+  /* ── 工序管理（TASK-004） ── */
+  manageDialogOpen: boolean;
+  editDialogOpen: boolean;
+  editingProcess: ProcessLibraryItem | null;
+  processSaving: boolean;
+  setManageDialogOpen: (open: boolean) => void;
+  setEditDialogOpen: (open: boolean, process?: ProcessLibraryItem | null) => void;
+  createCustomProcess: (data: CreateCustomProcessData) => Promise<void>;
+  updateCustomProcess: (data: UpdateCustomProcessData) => Promise<void>;
+  toggleProcessActive: (id: number, isActive: boolean) => Promise<void>;
+  deleteCustomProcess: (id: number) => Promise<DeleteProcessResult>;
 }
 
 export const useRouteStore = create<RouteState>((set, get) => ({
@@ -67,6 +82,11 @@ export const useRouteStore = create<RouteState>((set, get) => ({
   libraryLoading: false,
   nodes: [],
   edges: [],
+  /* ── 工序管理 ── */
+  manageDialogOpen: false,
+  editDialogOpen: false,
+  editingProcess: null,
+  processSaving: false,
 
   onNodesChange: (changes) => {
     set({
@@ -264,5 +284,65 @@ export const useRouteStore = create<RouteState>((set, get) => ({
 
   setListFilter: (filter) => {
     set({ listFilter: filter });
+  },
+
+  /* ── 工序管理 ── */
+  setManageDialogOpen: (open) => {
+    set({ manageDialogOpen: open });
+  },
+
+  setEditDialogOpen: (open, process) => {
+    set({ editDialogOpen: open, editingProcess: process ?? null });
+  },
+
+  createCustomProcess: async (data) => {
+    set({ processSaving: true });
+    try {
+      const newProcess = await window.electronAPI.processLibrary.create(data);
+      set((s) => ({
+        processLibrary: [...s.processLibrary, newProcess],
+        processSaving: false,
+        editDialogOpen: false,
+      }));
+    } catch (err) {
+      console.error("创建自定义工序失败:", err);
+      set({ processSaving: false });
+      throw err;
+    }
+  },
+
+  updateCustomProcess: async (data) => {
+    set({ processSaving: true });
+    try {
+      await window.electronAPI.processLibrary.update(data);
+      await get().fetchProcessLibrary();
+      set({ processSaving: false, editDialogOpen: false });
+    } catch (err) {
+      console.error("更新自定义工序失败:", err);
+      set({ processSaving: false });
+      throw err;
+    }
+  },
+
+  toggleProcessActive: async (id, isActive) => {
+    try {
+      await window.electronAPI.processLibrary.toggleActive(id, isActive);
+      await get().fetchProcessLibrary();
+    } catch (err) {
+      console.error("切换工序状态失败:", err);
+    }
+  },
+
+  deleteCustomProcess: async (id) => {
+    try {
+      const result = await window.electronAPI.processLibrary.delete(id);
+      if (result.success) {
+        await get().fetchProcessLibrary();
+      }
+      return result;
+    } catch (err) {
+      console.error("删除自定义工序失败:", err);
+      throw err;
+    }
   },
 }));
