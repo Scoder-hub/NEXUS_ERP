@@ -226,3 +226,46 @@
 **下游需关注**:
 - DevOps：构建发布时需执行 `electron-rebuild` 确保 better-sqlite3 与 Electron 版本匹配
 - 用户验收：核心功能可用，UI 完整
+
+---
+
+### DevOps — 已完成 ✅
+
+**状态**: 🟢 构建+发布完成（2026-07-10）
+
+**发布记录**:
+
+| 项目 | 内容 |
+|------|------|
+| 版本号 | v0.1.0 |
+| 分支 | `develop` (4dc7ed3) |
+| 功能分支 | `feature/TASK-002-工艺路线设计器` |
+| 变更内容 | 工艺路线设计器基础阶段（画布编辑器 + 工序库 + 路线CRUD） |
+| 构建产物 | `dist/`（渲染层）+ `dist-electron/`（主进程+preload） |
+| 数据库迁移 | 自动建表（3表）+ 种子数据（8道标准工序），首次启动完成 |
+| 配置变更 | 新增依赖：drizzle-orm、nanoid、react-router-dom、drizzle-kit(dev) |
+
+**发布验证**:
+
+| # | 验证项 | 结果 |
+|---|--------|------|
+| 1 | 应用构建 — `tsc --noEmit` | ✅ 零错误 |
+| 2 | 应用构建 — `vite build` | ✅ 渲染层 + Electron 层通过 |
+| 3 | 数据库初始化 | ✅ SQLite 3 表自动建表 + 8道工序种子数据 |
+| 4 | 核心功能 - 路线列表页 | ✅ 搜索/过滤/CRUD |
+| 5 | 核心功能 - 画布编辑器 | ✅ 拖拽/连线/参数编辑/保存/发布 |
+| 6 | 核心功能 - 状态流转 | ✅ 草稿→已发布→只读 |
+| 7 | 回滚方案 | `git revert 4dc7ed3` 可回滚到 `a3df37e`（初始骨架） |
+
+**回滚方案指引**:
+- 全量回滚：`git checkout main && git revert --no-commit 4dc7ed3..a3df37e && git commit`
+- 增量修复：在 `develop` 分支创建 `bugfix/TASK-002-xxx` 后 cherry-pick 到 `main`
+- 数据库：删除 `~/Library/Application Support/xingcheng-ims/data/xingcheng-ims.db` 后重启会自动重建
+
+**用户验收指引**:
+1. 运行 `npm run dev` 启动应用
+2. 点击导航栏"工艺"进入列表页
+3. 点击"+ 新建路线"进入画布编辑器
+4. 从左侧拖拽工序到画布，连接节点，编辑参数
+5. 保存（Ctrl+S）→ 发布 → 验证只读模式
+6. 返回列表查看状态变更
