@@ -1,8 +1,9 @@
 /// <reference types="vite/client" />
 
-interface Window {
-  electronAPI: {
-    platform: string
-    versions: Record<string, string>
+import type { ElectronAPI } from './src/lib/types/route'
+
+declare global {
+  interface Window {
+    electronAPI: ElectronAPI
   }
 }
