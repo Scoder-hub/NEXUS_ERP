@@ -1,7 +1,12 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { join } from "path";
+import { join, dirname } from "path";
 import { existsSync } from "fs";
+import { fileURLToPath } from "url";
 import { registerHandlers } from "./handlers";
+import { registerVersionHandlers } from "./version-handlers";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -45,9 +50,8 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
-  // 注册数据库 IPC handlers
   registerHandlers();
-
+  registerVersionHandlers();
   createWindow();
 
   app.on("activate", () => {
@@ -63,7 +67,6 @@ app.on("window-all-closed", () => {
   }
 });
 
-// 保留原有的兼容 IPC
 ipcMain.handle("get-platform", () => process.platform);
 ipcMain.handle("get-versions", () => ({
   electron: process.versions.electron,

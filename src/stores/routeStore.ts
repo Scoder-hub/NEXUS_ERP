@@ -157,7 +157,7 @@ export const useRouteStore = create<RouteState>((set, get) => ({
 
     const viewport = { x: 0, y: 0, zoom: 1 };
     const snapshot = JSON.stringify({ nodes, edges, viewport });
-    await window.electronAPI.route.save(currentRoute.id, {
+    const result = await window.electronAPI.route.save(currentRoute.id, {
       snapshot,
       nodeCount: nodes.length,
       edgeCount: edges.length,
@@ -167,6 +167,7 @@ export const useRouteStore = create<RouteState>((set, get) => ({
       currentRoute: {
         ...currentRoute,
         snapshot: { nodes: nodes as any, edges: edges as any, viewport },
+        version: result.newVersion,
         nodeCount: nodes.length,
         edgeCount: edges.length,
         updatedAt: new Date().toISOString(),

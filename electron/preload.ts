@@ -11,6 +11,13 @@ const CHANNELS = {
   ROUTE_PUBLISH: "route:publish",
   ROUTE_DELETE: "route:delete",
   ROUTE_NEW_VERSION: "route:new-version",
+  ROUTE_GET_HISTORY: "route:get-history",
+  ROUTE_GET_HISTORY_DETAIL: "route:get-history-detail",
+  ROUTE_ROLLBACK: "route:rollback",
+  PROCESS_LIBRARY_CREATE: "process-library:create",
+  PROCESS_LIBRARY_UPDATE: "process-library:update",
+  PROCESS_LIBRARY_TOGGLE_ACTIVE: "process-library:toggle-active",
+  PROCESS_LIBRARY_DELETE: "process-library:delete",
 };
 
 contextBridge.exposeInMainWorld("electronAPI", {
@@ -30,6 +37,14 @@ contextBridge.exposeInMainWorld("electronAPI", {
       ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_GET_BY_CATEGORY, category),
     search: (query: string) =>
       ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_SEARCH, query),
+    create: (data: any) =>
+      ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_CREATE, data),
+    update: (data: any) =>
+      ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_UPDATE, data),
+    toggleActive: (id: number, isActive: boolean) =>
+      ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_TOGGLE_ACTIVE, id, isActive),
+    delete: (id: number) =>
+      ipcRenderer.invoke(CHANNELS.PROCESS_LIBRARY_DELETE, id),
   },
 
   // 路线 API
@@ -44,5 +59,16 @@ contextBridge.exposeInMainWorld("electronAPI", {
     delete: (id: number) => ipcRenderer.invoke(CHANNELS.ROUTE_DELETE, id),
     newVersion: (id: number) =>
       ipcRenderer.invoke(CHANNELS.ROUTE_NEW_VERSION, id),
+    getHistory: (routeId: number) =>
+      ipcRenderer.invoke(CHANNELS.ROUTE_GET_HISTORY, routeId),
+    getHistoryDetail: (historyId: number) =>
+      ipcRenderer.invoke(CHANNELS.ROUTE_GET_HISTORY_DETAIL, historyId),
+    rollback: (routeId: number, historyId: number, changeDescription: string) =>
+      ipcRenderer.invoke(
+        CHANNELS.ROUTE_ROLLBACK,
+        routeId,
+        historyId,
+        changeDescription,
+      ),
   },
 });

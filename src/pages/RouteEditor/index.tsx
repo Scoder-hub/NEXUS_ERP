@@ -1,212 +1,266 @@
-import { useEffect, useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useShallow } from "zustand/react/shallow";
 import { useRouteStore } from "../../stores/routeStore";
+import { useRouteVersionStore } from "../../stores/routeVersionStore";
+import { parseVersion } from "../../lib/utils/version";
+import type { Node } from "@xyflow/react";
 import ProcessPanel from "./ProcessPanel";
 import CanvasView from "./CanvasView";
 import ParamPanel from "./ParamPanel";
-import type { Node } from "@xyflow/react";
+import SaveConfirmDialog from "./dialogs/SaveConfirmDialog";
+import VersionHistoryDialog from "./dialogs/VersionHistoryDialog";
+import VersionCompareView from "./dialogs/VersionCompareView";
+
+/** 编辑器初始化 Hook */
+function useInit(id: string | undefined) {
+  const init = useRouteStore((s) => ({
+    fetchProcessLibrary: s.fetchProcessLibrary,
+    createRoute: s.createRoute,
+    fetchRoute: s.fetchRoute,
+    resetEditor: s.resetEditor,
+  }));
+  useEffect(() => {
+    init.fetchProcessLibrary();
+    if (id === "new") init.createRoute("新建工艺路线");
+    else if (id && !isNaN(Number(id))) init.fetchRoute(Number(id));
+    return () => init.resetEditor();
+  }, [id]);
+}
 
 export default function RouteEditor() {
-  const { id } = useParams<{ id: string }>();
+  const { id } = useParams();
   const navigate = useNavigate();
-  const store = useRouteStore(
-    useShallow((s) => ({
-      currentRoute: s.currentRoute,
-      nodes: s.nodes,
-      edges: s.edges,
-      editorLoading: s.editorLoading,
-      isDirty: s.isDirty,
-      selectedNodeId: s.selectedNodeId,
-      processLibrary: s.processLibrary,
-      libraryLoading: s.libraryLoading,
-      onNodesChange: s.onNodesChange,
-      onEdgesChange: s.onEdgesChange,
-      onConnect: s.onConnect,
-      fetchRoute: s.fetchRoute,
-      fetchProcessLibrary: s.fetchProcessLibrary,
-      createRoute: s.createRoute,
-      saveRoute: s.saveRoute,
-      publishRoute: s.publishRoute,
-      addNode: s.addNode,
-      removeSelected: s.removeSelected,
-      selectNode: s.selectNode,
-      updateNodeParams: s.updateNodeParams,
-      resetEditor: s.resetEditor,
-    })),
+  useInit(id);
+
+  const editor = useRouteStore((s) => ({
+    currentRoute: s.currentRoute,
+    nodes: s.nodes,
+    edges: s.edges,
+    editorLoading: s.editorLoading,
+    isDirty: s.isDirty,
+    selectedNodeId: s.selectedNodeId,
+    processLibrary: s.processLibrary,
+    libraryLoading: s.libraryLoading,
+    onNodesChange: s.onNodesChange,
+    onEdgesChange: s.onEdgesChange,
+    onConnect: s.onConnect,
+    publishRoute: s.publishRoute,
+    addNode: s.addNode,
+    selectNode: s.selectNode,
+  }));
+
+  const version = useRouteVersionStore((s) => ({
+    showSaveDialog: s.showSaveDialog,
+    saveChangeDescription: s.saveChangeDescription,
+    showHistoryDialog: s.showHistoryDialog,
+    showCompareView: s.showCompareView,
+    compareDiff: s.compareDiff,
+    compareSnapshotA: s.compareSnapshotA,
+    compareSnapshotB: s.compareSnapshotB,
+    setSaveDialogOpen: s.setSaveDialogOpen,
+    setSaveChangeDescription: s.setSaveChangeDescription,
+    setHistoryDialogOpen: s.setHistoryDialogOpen,
+    setCompareViewOpen: s.setCompareViewOpen,
+    fetchVersionHistory: s.fetchVersionHistory,
+    saveRouteWithHistory: s.saveRouteWithHistory,
+    rollbackToVersion: s.rollbackToVersion,
+    compareVersions: s.compareVersions,
+  }));
+
+  // ── Callbacks ──
+  const handleNodeClick = useCallback(
+    (_e: any, n: Node) => editor.selectNode(n.id), [],
   );
-
-  // 初始化：加载工序库和路线数据
-  useEffect(() => {
-    store.fetchProcessLibrary();
-
-    if (id === "new") {
-      store.createRoute("新建工艺路线");
-    } else if (id && !isNaN(Number(id))) {
-      store.fetchRoute(Number(id));
-    }
-
-    return () => {
-      store.resetEditor();
-    };
-  }, [id]);
-
-  // 键盘快捷键
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        store.saveRoute();
-      }
-      if (e.key === "Delete" || e.key === "Backspace") {
-        // React Flow 已处理删除
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const handleNodeClick = useCallback((_event: any, node: Node) => {
-    store.selectNode(node.id);
-  }, []);
-
-  const handleNodeDoubleClick = useCallback((_event: any, node: Node) => {
-    store.selectNode(node.id);
-  }, []);
-
-  const handlePaneClick = useCallback(() => {
-    store.selectNode(null);
-  }, []);
-
+  const handleNodeDblClick = useCallback(
+    (_e: any, n: Node) => editor.selectNode(n.id), [],
+  );
+  const handlePaneClick = useCallback(
+    () => editor.selectNode(null), [],
+  );
   const handleDropNode = useCallback(
-    (processId: number, position: { x: number; y: number }) => {
-      store.addNode(processId, position);
-    },
-    [],
+    (pid: number, pos: { x: number; y: number }) => editor.addNode(pid, pos), [],
+  );
+  const handleBack = useCallback(
+    () => navigate("/routes"), [navigate],
   );
 
-  const handleBack = useCallback(() => {
-    navigate("/routes");
-  }, [navigate]);
-
-  const handleSave = useCallback(async () => {
-    await store.saveRoute();
+  const handleSave = useCallback(() => {
+    version.setSaveChangeDescription?.("");
+    version.setSaveDialogOpen?.(true);
   }, []);
 
-  const handlePublish = useCallback(async () => {
-    await store.publishRoute();
+  const handleSaveConfirm = useCallback(async () => {
+    if (!editor.currentRoute) return;
+    const nv = await version.saveRouteWithHistory(
+      editor.currentRoute, editor.nodes, editor.edges,
+      version.saveChangeDescription,
+    );
+    if (nv && editor.currentRoute) {
+      useRouteStore.setState({
+        isDirty: false,
+        currentRoute: {
+          ...editor.currentRoute,
+          version: nv,
+          updatedAt: new Date().toISOString(),
+        },
+      });
+    }
+  }, [editor.currentRoute, editor.nodes, editor.edges, version.saveChangeDescription]);
+
+  const handlePublish = useCallback(
+    async () => await editor.publishRoute(), [],
+  );
+
+  const handleHistory = useCallback(() => {
+    if (editor.currentRoute) {
+      version.fetchVersionHistory?.(editor.currentRoute.id);
+      version.setHistoryDialogOpen?.(true);
+    }
+  }, [editor.currentRoute]);
+
+  const handleRollback = useCallback(async (hid: number) => {
+    if (!editor.currentRoute) return;
+    const upd = await version.rollbackToVersion(
+      editor.currentRoute.id, hid, "回滚到历史版本",
+    );
+    if (upd) {
+      useRouteStore.setState({
+        currentRoute: upd,
+        nodes: upd.snapshot.nodes as Node[],
+        edges: upd.snapshot.edges as Node[],
+        isDirty: false,
+      });
+      useRouteVersionStore.setState({ showHistoryDialog: false });
+    }
+  }, [editor.currentRoute]);
+
+  const handleCompare = useCallback((a: number, b: number) => {
+    version.compareVersions?.(a, b);
+    version.setHistoryDialogOpen?.(false);
   }, []);
 
-  const selectedNode =
-    store.nodes.find((n) => n.id === store.selectedNodeId) || null;
+  const handleBackCompare = useCallback(() => {
+    version.setCompareViewOpen?.(false);
+    version.setHistoryDialogOpen?.(true);
+  }, []);
 
-  const isReadonly =
-    store.currentRoute?.status === "published" ||
-    store.currentRoute?.status === "archived";
+  // ── Derived ──
+  const selected = editor.nodes.find((n) => n.id === editor.selectedNodeId) || null;
+  const readonly = editor.currentRoute?.status === "published" || editor.currentRoute?.status === "archived";
+
+  // 版本对比全屏
+  if (version.showCompareView && version.compareDiff) {
+    return (
+      <VersionCompareView
+        diff={version.compareDiff}
+        snapshotA={version.compareSnapshotA!}
+        snapshotB={version.compareSnapshotB!}
+        onBack={handleBackCompare}
+      />
+    );
+  }
+
+  const cur = editor.currentRoute;
 
   return (
     <div className="editor-layout">
       {/* 顶栏 */}
       <header className="editor-header">
-        <button className="editor-header__back" onClick={handleBack}>
-          ← 返回列表
-        </button>
-        <h2 className="editor-header__title">
-          {store.currentRoute?.name || "工艺路线设计器"}
-        </h2>
+        <button className="editor-header__back" onClick={handleBack}>← 返回列表</button>
+        <h2 className="editor-header__title">{cur?.name || "工艺路线设计器"}</h2>
         <div className="editor-header__status">
-          {store.currentRoute && (
-            <span
-              className={`status-badge status-badge--${store.currentRoute.status}`}
-            >
-              {statusLabel(store.currentRoute.status)}
-            </span>
+          {cur && (
+            <>
+              <span className={`status-badge status-badge--${cur.status}`}>
+                {S[cur.status] || cur.status}
+              </span>
+              <span className="editor-header__version">{cur.version}</span>
+            </>
           )}
         </div>
         <div className="editor-header__actions">
-          {store.isDirty && (
-            <span className="editor-header__dirty">有未保存的变更</span>
-          )}
-          {!isReadonly && (
+          {editor.isDirty && <span className="editor-header__dirty">有未保存的变更</span>}
+          {!readonly && (
             <>
-              <button
-                className="editor-header__btn editor-header__btn--save"
-                onClick={handleSave}
-              >
-                {store.isDirty ? "保存" : "已保存"}
+              <button className="editor-header__btn editor-header__btn--history" onClick={handleHistory}>📋 历史</button>
+              <button className="editor-header__btn editor-header__btn--save" onClick={handleSave}>
+                {editor.isDirty ? "保存" : "已保存"}
               </button>
-              {store.currentRoute?.status === "draft" && (
-                <button
-                  className="editor-header__btn editor-header__btn--publish"
-                  onClick={handlePublish}
-                >
-                  发布
-                </button>
+              {cur?.status === "draft" && (
+                <button className="editor-header__btn editor-header__btn--publish" onClick={handlePublish}>发布</button>
               )}
             </>
+          )}
+          {readonly && cur?.status === "published" && (
+            <button className="editor-header__btn editor-header__btn--history" onClick={handleHistory}>📋 历史</button>
           )}
         </div>
       </header>
 
       {/* 三栏主体 */}
       <div className="editor-body">
-        {!isReadonly && (
+        {!readonly && (
           <ProcessPanel
-            library={store.processLibrary}
-            loading={store.libraryLoading}
-            onSearch={() => {}}
-            onDragStart={() => {}}
+            library={editor.processLibrary} loading={editor.libraryLoading}
+            onSearch={() => {}} onDragStart={() => {}}
           />
         )}
-
-        {store.editorLoading ? (
+        {editor.editorLoading ? (
           <div className="editor-loading">加载中...</div>
         ) : (
           <CanvasView
-            nodes={store.nodes}
-            edges={store.edges}
-            onNodesChange={store.onNodesChange}
-            onEdgesChange={store.onEdgesChange}
-            onConnect={store.onConnect}
+            nodes={editor.nodes} edges={editor.edges}
+            onNodesChange={editor.onNodesChange}
+            onEdgesChange={editor.onEdgesChange}
+            onConnect={editor.onConnect}
             onNodeClick={handleNodeClick}
-            onNodeDoubleClick={handleNodeDoubleClick}
+            onNodeDoubleClick={handleNodeDblClick}
             onPaneClick={handlePaneClick}
             onDropNode={handleDropNode}
-            readonly={isReadonly}
+            readonly={readonly}
           />
         )}
-
         <ParamPanel
-          node={selectedNode}
-          processLibrary={store.processLibrary}
-          onParamsChange={store.updateNodeParams}
-          onClose={() => store.selectNode(null)}
-          readonly={isReadonly}
+          node={selected} processLibrary={editor.processLibrary}
+          onParamsChange={(nid, p) => useRouteStore.getState().updateNodeParams(nid, p)}
+          onClose={() => editor.selectNode(null)} readonly={readonly}
         />
       </div>
 
       {/* 状态栏 */}
       <footer className="editor-footer">
-        <span>
-          状态:{" "}
-          {store.currentRoute ? statusLabel(store.currentRoute.status) : "-"}
-        </span>
-        <span>节点: {store.nodes.length}</span>
-        <span>连线: {store.edges.length}</span>
-        {store.isDirty && (
-          <span className="editor-footer__dirty">· 未保存变更</span>
-        )}
+        <span>状态: {cur ? (S[cur.status] || cur.status) : "-"}</span>
+        <span>版本: {cur?.version || "-"}</span>
+        <span>节点: {editor.nodes.length}</span>
+        <span>连线: {editor.edges.length}</span>
+        {editor.isDirty && <span className="editor-footer__dirty">· 未保存变更</span>}
       </footer>
+
+      {/* 保存对话框 */}
+      {cur && (
+        <SaveConfirmDialog
+          open={version.showSaveDialog}
+          routeName={cur.name}
+          currentVersion={cur.version}
+          nextVersion={`v${parseVersion(cur.version).major}.${parseVersion(cur.version).minor + 1}`}
+          description={version.saveChangeDescription}
+          onDescriptionChange={(d) => useRouteVersionStore.setState({ saveChangeDescription: d })}
+          onConfirm={handleSaveConfirm}
+          onCancel={() => version.setSaveDialogOpen?.(false)}
+        />
+      )}
+
+      {/* 版本历史对话框 */}
+      {cur && (
+        <VersionHistoryDialog
+          routeId={cur.id} currentVersion={cur.version}
+          open={version.showHistoryDialog}
+          onClose={() => version.setHistoryDialogOpen?.(false)}
+          onRollback={handleRollback} onCompare={handleCompare}
+        />
+      )}
     </div>
   );
 }
 
-function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    draft: "草稿",
-    pending: "待审核",
-    published: "已发布",
-    archived: "已归档",
-  };
-  return map[status] || status;
-}
+const S: Record<string, string> = { draft: "草稿", pending: "待审核", published: "已发布", archived: "已归档" };
