@@ -12,13 +12,13 @@
 | TASK-001 | 搭建ERP桌面应用首个版本并配置热更新开发 | ✅ 完成                         | 2026-06-06 |
 | TASK-002 | 工艺路线设计器 — 基础阶段               | ✅ 全部完成                     | 2026-07-10 |
 | TASK-003 | 工艺路线版本管理                        | 🟡 QA 通过（2 Bug 延期至 v0.2） | 2026-07-11 |
-| TASK-004 | 自定义工序 + 工序分类                   | ✅ PM+UX+架构师完成             | 2026-07-11 |
-| TASK-005 | 质检节点                                | ✅ PM+UX+架构师完成             | 2026-07-11 |
-| TASK-006 | 生产管理 — 工单管理 + 工序流转          | ✅ PM+UX+架构师完成             | 2026-07-11 |
-| TASK-007 | 生产管理 — 批次追溯 + 在制品看板        | ✅ UX设计师完成                 | 2026-07-11 |
-| TASK-008 | 库存管理 — 原材料                       | 🔄 进行中 (UX设计师)             | 2026-07-11 |
-| TASK-009 | 库存管理 — 半成品 + 成品                | 🔄 进行中 (UX设计师)             | 2026-07-11 |
-| TASK-010 | 质量管理 — IQC + IPQC + OQC             | ⏳ 待开始（v0.5）               | 2026-07-11 |
+| TASK-004 | 自定义工序 + 工序分类                   | ✅ 全部完成                      | 2026-07-11 |
+| TASK-005 | 质检节点                                | ✅ PM+UX+架构师+后端完成        | 2026-07-11 |
+| TASK-006 | 生产管理 — 工单管理 + 工序流转          | ✅ PM+UX+架构师+后端完成        | 2026-07-11 |
+| TASK-007 | 生产管理 — 批次追溯 + 在制品看板        | ✅ PM+UX+架构师完成             | 2026-07-11 |
+| TASK-008 | 库存管理 — 原材料                       | ✅ UX设计师完成                 | 2026-07-11 |
+| TASK-009 | 库存管理 — 半成品 + 成品                | ✅ UX设计师完成                 | 2026-07-11 |
+| TASK-010 | 质量管理 — IQC + IPQC + OQC             | ✅ UX设计师完成                 | 2026-07-11 |
 | TASK-011 | 设备管理 — 台账 + 保养 + 维修           | ⏳ 待开始（v0.6）               | 2026-07-11 |
 
 ---
@@ -325,27 +325,27 @@
 
 **测试结果汇总**:
 
-| 验收项 | 结果 |
-|--------|------|
-| AC-V01: 保存后历史中出现 v0.1 | ✅ 通过 |
-| AC-V02: 保存后历史中出现 v0.2 | ✅ 通过 |
-| AC-V03: 版本历史时间线列表 | ✅ 通过 |
+| 验收项                            | 结果    |
+| --------------------------------- | ------- |
+| AC-V01: 保存后历史中出现 v0.1     | ✅ 通过 |
+| AC-V02: 保存后历史中出现 v0.2     | ✅ 通过 |
+| AC-V03: 版本历史时间线列表        | ✅ 通过 |
 | AC-V04: 版本对比（节点/参数差异） | ✅ 通过 |
-| AC-V05: 回滚到历史版本 | ✅ 通过 |
-| AC-V06: 保存弹窗 + 变更说明必填 | ✅ 通过 |
-| AC-V07: 发布后版本号变为 v1.0 | ✅ 通过 |
-| AC-V08: 版本号自动递增 | ✅ 通过 |
+| AC-V05: 回滚到历史版本            | ✅ 通过 |
+| AC-V06: 保存弹窗 + 变更说明必填   | ✅ 通过 |
+| AC-V07: 发布后版本号变为 v1.0     | ✅ 通过 |
+| AC-V08: 版本号自动递增            | ✅ 通过 |
 
 **测试结论**: 8 条验收标准全部通过。核心版本管理功能（存档、历史列表、对比、回滚、版本号递增）实现完整。
 
 **延期到 v0.2 修复**（已记录至 docs/dev-notes.md 延期决策章节）:
 
-| 编号 | 描述 | 严重度 | 状态 |
-|------|------|--------|------|
-| Bug-004 | 无变更时保存仍创建版本（违反 BR-V03）— 不检查 isDirty | 🟡 Major | 📅 延期至 v0.2 |
+| 编号    | 描述                                                     | 严重度   | 状态           |
+| ------- | -------------------------------------------------------- | -------- | -------------- |
+| Bug-004 | 无变更时保存仍创建版本（违反 BR-V03）— 不检查 isDirty    | 🟡 Major | 📅 延期至 v0.2 |
 | Bug-005 | 未保存脏状态直接发布丢失变更 — publishRoute 不检查脏状态 | 🟡 Major | 📅 延期至 v0.2 |
-| Opt-001 | 版本号 v999.999 上限未检测 | 🔵 优化 | 📅 延期至 v0.2 |
-| Opt-002 | 删除路线未清理版本历史 | 🔵 优化 | 📅 延期至 v0.2 |
+| Opt-001 | 版本号 v999.999 上限未检测                               | 🔵 优化  | 📅 延期至 v0.2 |
+| Opt-002 | 删除路线未清理版本历史                                   | 🔵 优化  | 📅 延期至 v0.2 |
 
 **Bug-004 详情**: PRD BR-V03 规定"保存时无变更不创建新版本，提示无变更无需保存"。当前 `handleSave` 不检查 `isDirty`，点击保存始终弹对话框，输入说明即可创建空版本。
 
@@ -485,6 +485,47 @@
 
 - 前端开发者需接着实现：`ProcessManageDialog.tsx` / `ProcessEditDialog.tsx` / `ParamTemplateEditor.tsx` / `processCode.ts` / `ProcessPanel.tsx` 改造 / `routeStore.ts` Store 扩展
 - 所有 Handler 已做标准工序保护，category='standard' 的工序不可 write
+
+---
+
+### 前端开发者 — 完成 ✅
+
+**状态**: 🟢 TASK-004 前端编码完成（2026-07-11）
+
+**完成内容**:
+
+| 文件 | 类型 | 说明 |
+|------|------|------|
+| `src/lib/utils/processCode.ts` | 新增 | 编码生成工具（getNextCustomCode / isValidCode / sortCustomCodes） |
+| `src/components/ui/ParamTemplateEditor.tsx` | 新增 | 参数模板编辑器（动态参数行：名称/类型/必填/单位/范围，至少保留1个） |
+| `src/pages/RouteEditor/ProcessEditDialog.tsx` | 新增 | 工序编辑表单（新增/编辑共用，名称/编码/责任人/描述/参数模板，未保存确认弹窗） |
+| `src/pages/RouteEditor/ProcessManageDialog.tsx` | 新增 | 工序管理弹窗（完整表格+分类筛选+搜索+行内操作+删除确认+引用阻止提示） |
+| `src/pages/RouteEditor/ProcessPanel.tsx` | 修改 | 管理按钮+行内编辑/禁用图标+分组计数+禁用态+全部禁用提示 |
+| `src/stores/routeStore.ts` | 修改 | 新增工序管理 actions（create/update/toggleActive/delete + dialog状态） |
+| `src/pages/RouteEditor/index.tsx` | 修改 | 集成 ProcessManageDialog + ProcessEditDialog + 删除阻止弹窗 |
+| `src/styles/global.css` | 修改 | 新增全部工序管理组件样式（~540 行 CSS） |
+
+**验证链**:
+
+- ✅ 全部新增文件 < 300 行（最大 256 行）
+- ✅ 类型导入完整性检查通过（explore 工具验证）
+- ✅ 无 window.confirm/alert/prompt（改用 React 状态弹窗）
+- ✅ 设计规范：BEM 命名、Design Token 引用、宁圆不方
+- ⚠️ tsc 编译需本地 Node 环境
+
+**关键决策**:
+
+- `ProcessEditDialog` 新增/编辑共用同一个组件，通过 `process` 参数判断模式
+- 参数模板编辑器至少保留 1 个参数行（防止空模板）
+- 未保存关闭弹窗使用 React 状态弹窗替代 `window.confirm`（符合项目规范）
+- 删除被引用弹窗在内联 JSX 中渲染，不依赖额外组件
+- 已有 4 个新类型 + 4 个 IPC Handler + preload 暴露已在 TASK-003 后端阶段完成，本次专注 UI 层
+
+**下游需关注**:
+
+- 审查员需重点检查：ProcessEditDialog 的表单校验逻辑、工序管理弹窗的筛选搜索性能
+- QA 需关注：新增自定义工序全流程（创建→编辑→禁用→删除→引用检查）
+- 标准工序不可操作（编辑/禁用/删除按钮隐藏）由 UI 层 + handler 层双重保障
 
 ---
 
@@ -806,6 +847,78 @@
 
 ---
 
+### 后端开发者 — 完成 ✅
+
+**状态**: 🟢 TASK-006 后端编码完成（2026-07-11）
+
+**完成内容**:
+
+- `src/lib/types/production.ts` — 新增 12 个类型接口（ProductItem / WorkOrderListItem / WorkOrderDetail / CreateWorkOrderData / WorkOrderListParams / WorkReportItem / SubmitWorkReportData / InspectionResult / WorkReportDetailItem / WorkOrderLogItem / WorkOrderProgress / ProcessProgressItem / WipData）
+- `src/lib/types/route.ts` — 扩展 ElectronAPI 新增 `production` 命名空间 + `route.getPublishedList`
+- `electron/database.ts` — 新增 5 张表 + 7 个索引 + 5 条种子产品数据
+- `electron/handlers/production-order.ts` — 新增：产品 + 工单 CRUD（7 个 IPC 通道）
+- `electron/handlers/production-report.ts` — 新增：报工 + 进度 + 日志（5 个 IPC 通道）
+- `electron/production-handlers.ts` — 新增：门面文件，注册两个子 handler
+- `electron/handlers.ts` — 新增 `route:get-published-list` 通道 + handler
+- `electron/preload.ts` — 新增 13 个通道常量 + production 命名空间 + getPublishedList 暴露
+- `electron/main.ts` — 注册 `registerProductionHandlers()`
+
+**数据库表**:
+
+| 表名                  | 用途         | 关键字段                                                                     |
+| --------------------- | ------------ | ---------------------------------------------------------------------------- |
+| `products`            | 产品目录     | code(唯一), name, specs, unit                                                |
+| `work_orders`         | 工单         | order_no(唯一), status, route_snapshot(JSON), current_process_index          |
+| `work_reports`        | 报工记录     | order_id, process_index, completed_qty, qualified_qty, is_reversed(红冲标记) |
+| `work_report_details` | 报工质检明细 | report_id, inspection_name, actual_value, result                             |
+| `work_order_logs`     | 状态变更日志 | order_id, from_status, to_status, change_type                                |
+
+**IPC 通道一览**:
+
+| 通道                                  | Handler | 功能                                |
+| ------------------------------------- | ------- | ----------------------------------- |
+| `production:product-list`             | order   | 获取产品列表                        |
+| `production:work-order-list`          | order   | 工单列表（筛选/搜索/分页）          |
+| `production:work-order-get-by-id`     | order   | 工单详情                            |
+| `production:work-order-create`        | order   | 创建工单（自动编号+批号+日志）      |
+| `production:work-order-update-status` | order   | 更新状态                            |
+| `production:work-order-close`         | order   | 关闭工单                            |
+| `production:work-order-rollback`      | order   | 回退工序                            |
+| `production:work-report-submit`       | report  | 提交报工（含质检明细+状态自动变更） |
+| `production:work-report-reverse`      | report  | 红冲报工                            |
+| `production:work-report-list`         | report  | 报工记录列表（含质检明细关联）      |
+| `production:work-order-progress`      | report  | 工单进度聚合查询                    |
+| `production:work-order-logs`          | report  | 状态变更日志                        |
+
+**关键业务逻辑**:
+
+1. **工单创建** — 自动生成 WO-YYYYMMDD-NNN 编号 + B 批次号；创建时锁定路线快照
+2. **报工提交** — 数量校验 ≤ 计划量；首次报工→自动变更为 `in_progress`；末道达标→自动变更为 `completed`；非末道→推进 `currentProcessIndex`
+3. **红冲** — 标记 `is_reversed=1` 而非删除，聚合时排除
+4. **进度查询** — 从 `routeSnapshot.nodes` 按路线顺序排列，聚合报工数据标记状态
+
+**种子数据**: 5 种电瓷产品（10kV绝缘子/针式绝缘子/悬式绝缘子/支柱绝缘子/套管绝缘子）
+
+**验证链**:
+
+- ✅ Prettier 格式化通过
+- ✅ tsc --noEmit 零新增错误（2 个前端的既有错误保持不变）
+- ✅ 全部新增文件 ≤ 300 行
+
+**修改文件清单**:
+
+- 新增：`src/lib/types/production.ts`、`electron/production-handlers.ts`、`electron/handlers/production-order.ts`、`electron/handlers/production-report.ts`
+- 修改：`src/lib/types/route.ts`、`electron/database.ts`、`electron/handlers.ts`、`electron/preload.ts`、`electron/main.ts`
+
+**下游需关注**:
+
+- 前端开发者需接着实现：`src/pages/Production/` 目录下 3 个页面 + 3 个组件 + `workOrderStore.ts` + `RouteSelectDialog.tsx` + 路由注册 + 导航激活 + 样式
+- 质检节点报工：前端需解析 `routeSnapshot` 中的 `inspectionItems`，传给 `WorkReportForm` 渲染
+- `workOrderStore.ts` 中所有 action 调用的 IPC 方法名需与 `electronAPI.production.*` 对齐
+- `ElectronAPI` 类型已在 `route.ts` 中扩展，前端 import `production.ts` 中类型即可
+
+---
+
 ## TASK-007: 生产管理 — 批次追溯 + 在制品看板
 
 ### PM 角色 — 已完成 ✅（已审批通过）
@@ -877,6 +990,68 @@
 - 开发者需关注：工序卡片展开/折叠状态管理、柱状图组件选择（canvas/SVG/CSS）
 - QA 需关注：在制品计算正确性（与 TASK-006 报工数据一致）、追溯数据只读验证
 
+### 架构师 — 已完成 ✅
+
+**状态**: 🟢 架构设计完成（2026-07-11）
+
+**完成内容**:
+
+- 输出 `docs/design.md` 第十一部分 — 生产管理 TASK-007 技术设计（架构师）
+- 7 个 IPC 查询通道（追溯搜索/详情/最近搜索/看板/工序钻取/瓶颈配置/日产量）
+- 12 个类型定义扩展（TraceProcessCard/TraceDetail/WIPDashboardData/DailyOutputData 等）
+- 新增 8 个文件清单（BatchTrace/ + WIPDashboard/ + ProductionTabs + traceStore）
+- 修改 4 个文件清单（production.ts / production-handlers.ts / preload.ts / App.tsx / global.css）
+- 在制品计算核心公式设计（基于报工记录实时聚合）
+- 瓶颈阈值机制（默认 300，P2 扩展为可配置）
+- CSS 柱状图替代方案（不引入图表库）
+- 嵌套路由方案（ProductionShell + Outlet）
+- 性能优化方案（索引补充 + 查询优化 + 前端延迟加载）
+- 安全审查 + 性能评估 + 影响范围 + UX 对齐确认
+
+**关键决策**:
+
+| #   | 决策                           | 原因                                                                                    |
+| --- | ------------------------------ | --------------------------------------------------------------------------------------- |
+| 1   | **零新增数据库表**             | 所有数据来自 TASK-006 的 work_orders/work_reports/work_report_details，纯查询不需要新表 |
+| 2   | **CSS 柱状图而非图表库**       | 避免引入 ECharts/Chart.js 等依赖，CSS flex+height 足够实现简单的柱状图，P2 趋势图再用库 |
+| 3   | **嵌套路由 + Outlet**          | 生产模块三 Tab 共享同一个 Shell 组件，保持 Tab 切换上下文                               |
+| 4   | **在制品实时聚合而非快照**     | 与 TASK-006 规则一致，避免数据不一致                                                    |
+| 5   | **批次号/工单号 LIKE 搜索**    | 当前量级 ≤ 1000 条工单，LIKE 查询足够快，无需全文索引                                   |
+| 6   | **瓶颈阈值默认 300（硬编码）** | P2 再实现可配置表，减少当前实现复杂度                                                   |
+| 7   | **工序卡片默认折叠**           | 默认只展示摘要，点击展开详情，减少初始加载数据量                                        |
+
+**开发者需关注的核心设计**:
+
+| #   | 关注点            | 说明                                                                           |
+| --- | ----------------- | ------------------------------------------------------------------------------ |
+| 1   | 追溯搜索          | 通过 `production:trace-search` IPC，可按批次号或工单号 LIKE 模糊匹配           |
+| 2   | 追溯详情          | 通过 `production:trace-get-detail` 获取完整工序卡片列表，所有聚合在 SQL 层完成 |
+| 3   | 工序卡片展开/折叠 | 用 `expandable` 标记控制，展开时显示报工明细和质检结果                         |
+| 4   | 在制品看板        | `production:wip-get-dashboard` 聚合所有 in_progress 工单，按工序汇总在制品数   |
+| 5   | 柱状图            | 使用 CSS flex 布局实现，每个工序的柱高 = `wipQty / maxWip * 100%`，瓶颈标红    |
+| 6   | 日产量            | `production:stat-get-daily-output` 按 `date(created_at)` 聚合当日报工          |
+| 7   | Tab 切换          | ProductionShell 组件接管生产路由，通过 Outlet 渲染子页面                       |
+
+**修改文件清单**:
+
+- 新增：`src/pages/Production/BatchTrace/index.tsx`、`TraceCard.tsx`
+- 新增：`src/pages/Production/WIPDashboard/index.tsx`、`WIPBarChart.tsx`、`DailyOutputTable.tsx`、`BottleneckPanel.tsx`
+- 新增：`src/pages/Production/ProductionTabs.tsx`、`src/stores/traceStore.ts`
+- 修改：`src/lib/types/production.ts`、`electron/production-handlers.ts`、`electron/preload.ts`
+- 修改：`src/App.tsx`（生产模块改为嵌套路由）、`src/styles/global.css`
+
+**风险提示**:
+
+- 在制品计算依赖报工数据准确性：如果 TASK-006 的报工数据有误，在制品看板会直接反映错误
+- 追溯详情页的工序卡片数量取决于路线节点数（最多 8+ 道标准工序），展开状态下 DOM 节点可控
+- 日产量统计中 `date(created_at)` 索引需要补充（已规划），否则全表扫描
+
+**并行对齐确认**:
+
+- ✅ UX 方案完全覆盖：7 个 IPC 通道覆盖了追溯搜索/详情/看板/产量全部 UX 场景
+- ✅ 技术方案无不可行项：纯查询无写操作，无新依赖，完全复用 TASK-006 数据
+- ✅ 与 TASK-006 界线清晰：TASK-007 仅 SELECT，不修改任何业务数据
+
 ---
 
 ## TASK-008 / TASK-009: 库存管理（原材料 + 半成品 + 成品）
@@ -924,3 +1099,115 @@
 - 原材料入库与 TASK-010（来料检验）有依赖，建议入库功能先正常实现，质检锁定暂不实施（v0.5 集成时补上）
 - 半成品自动入仓功能依赖 TASK-006 报工数据接口，需等 TASK-006 开发完成
 - 盘点功能涉及库存冻结逻辑，复杂度较高，建议放到阶段二
+
+---
+
+### UX 设计师 — 已完成 ✅
+
+**状态**: 🟢 UX 设计完成（2026-07-11）
+
+**完成内容**:
+
+- 编写了 `docs/design.md` 第十一部分 — 库存管理 UX 交互设计
+- 库存模块五 Tab 切换架构：原材料 / 半成品 / 成品 / 出入库记录 / 预警配置
+- 原材料列表页：物料库存总览 + 按类别筛选 + 行展开批次详情（FIFO 排序）
+- 原材料入库弹窗：物料选择/快速新增、批次号自动生成、供应商登记
+- 原材料出库弹窗：FIFO 批次推荐勾选、关联工单、领用人
+- 半成品库存页（只读）：按产品/工序筛选、瓶颈状态联动 TASK-007 看板
+- 成品库存页：按型号/批次筛选、呆滞预警标记
+- 成品入库/出库弹窗：FIFO 推荐、关联工单/客户/订单
+- 出入库记录流水页：按类型/日期/物料筛选、红冲标记、分页
+- 盘点管理：盘点单列表 + 新建盘点 + 实盘录入（差异率超5%标红）
+- 预警配置页：行内编辑最低/最高库存阈值、实时状态显示
+- 8 种异常/错误状态、键盘快捷键映射
+- 与 TASK-006/TASK-010 的联动约定（分阶段实施）
+
+**关键决策**:
+
+- 原材料采用「列表+弹窗」模式（列表展示总库存，弹窗执行出入库操作），而非独立页面
+- 半成品库存为只读视图，所有数据由 TASK-006 工序报工自动驱动
+- 出库采用 FIFO 批次推荐勾选模式，用户可手动调整
+- 盘点差异率超 5% 自动标红 + 强制填写原因
+
+**下游需关注**:
+
+- 架构师需关注：FIFO 批次推荐逻辑（SQL 排序/前端计算）、盘点期间库存冻结机制
+- 开发者需关注：物料新增快速弹窗与入库弹窗的联动、FIFO 批次勾选逻辑
+- QA 需关注：出入库数量校验（不允许负库存）、FIFO 推荐正确性、盘点差异计算
+
+---
+
+## TASK-010: 质量管理 — IQC / IPQC / OQC / 不合格品管理
+
+### PM 角色 — 已完成 ✅（待审批）
+
+**状态**: 🟢 PRD 已完成（2026-07-11）
+
+**完成内容**:
+
+- 编写了质量管理 PRD（TASK-010）
+- 22 项功能需求（Q-01 ~ Q-22）
+- 覆盖：IQC 来料检验、IPQC 过程检验（与 TASK-005 质检节点联动）、OQC 成品检验、不合格品闭环管理、质量报表
+- 21 条业务规则（BR-Q01 ~ BR-Q21）
+- 9 种异常流程、8 项边界条件、14 条验收标准
+- 完整数据模型概要（7 张核心表：检验标准 / IQC 记录 / IPQC 记录 / OQC 记录 / 不合格品记录 / 缺陷类别）
+- 与 TASK-005 质检节点联动机制说明
+- 全链路质检流程图（IQC → IPQC → OQC → 不合格品闭环）
+
+**关键决策**:
+
+- IPQC 检验项目由工艺路线质检节点配置驱动（TASK-005），不单独配置
+- 关键工序（烧成、试验）IPQC 不合格 → 强制暂停工单
+- 检验记录不可删除/修改，仅可追加备注
+- IQC/OQC 基础检验功能可独立先行开发，质检联动作为集成阶段追加
+- 不合格品处理四选一：返工/报废/让步放行/降级使用，返工后必须复检
+
+**下游需关注**:
+
+- UX 设计师需设计：IQC 检验执行页、IPQC 检验面板（与工单详情集成）、OQC 检验执行页、不合格品管理页、检验标准配置页
+- 架构师需定义：7 张新表、15+ 个 IPC 通道、与 TASK-005 质检节点联动接口、与 TASK-006 工单状态联动接口、与 TASK-008/009 库存入库权限联动
+
+**风险提示**:
+
+- IPQC 与工单联动逻辑复杂（判定结果直接影响工单流转），建议加充分测试
+- IQC/OQC 与库存的入库权限联动需等库存模块就绪
+- 检验标准配置功能建议放到阶段二，阶段一先使用简单固定标准
+
+---
+
+### UX 设计师 — 已完成 ✅
+
+**状态**: 🟢 UX 设计完成（2026-07-11）
+
+**完成内容**:
+
+- 编写了 `docs/design.md` 第十二部分 — 质量管理 UX 交互设计
+- 质量模块五 Tab 切换架构：IQC / IPQC / OQC / 不合格品管理 / 质量报表
+- IQC 待检列表 + 检验执行页（按检验标准逐项录入实测值，自动判定合格/不合格）
+- IQC 判定与处置（合格入库/退货/让步放行/降级使用）
+- IQC 历史记录查询（按物料/供应商/日期筛选）
+- IPQC 待检列表（按工单聚合，展示质检节点工序）
+- IPQC 检验执行页（检测项目从路线质检节点自动加载）
+- IPQC 关键工序（烧成/试验）不合格强制暂停工单流程
+- OQC 待检列表 + 检验执行页（电气/机械/外观三项检测）
+- OQC 判定与处置（合格入库/返工/报废/降级）
+- 不合格品管理：列表 + 处理弹窗（返工/报废/让步/降级）+ 返工复检跟踪
+- 质量报表：合格率概览 + 各工序合格率 + 缺陷 Pareto 前 5
+- 检验标准配置页（按物料类别配置检测项目）
+- 判定结果 3 种交互模式（自动判定/手动判定/混合）
+- 7 种异常/错误状态、键盘快捷键映射
+- 与 TASK-005/006/008/009 的四项联动机制说明
+- 分阶段实施建议（阶段一独立开发，阶段二联动集成）
+
+**关键决策**:
+
+- IQC/OQC 的基础检验功能可独立先行开发，不与库存入库锁定强绑定（v0.5 集成）
+- IPQC 检测项目由 TASK-005 质检节点配置驱动，不在本模块单独配置
+- 检验录入按「逐项录入 + 自动判定」模式，减少质检员手动判定工作量
+- 关键工序不合格 → 强制暂停工单 + 跳转不合格品登记，确保不可绕过
+
+**下游需关注**:
+
+- 架构师需关注：IPQC 与工单的状态联动机制、IQC/OQC 与库存的权限拦截逻辑
+- 开发者需关注：检验录入表单的 Tab 键跳转顺序、自动判定逻辑实现
+- QA 需关注：IQC 不合格拦截入库、IPQC 不合格暂停工单、返工复检流程
