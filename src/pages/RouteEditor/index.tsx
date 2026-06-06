@@ -53,6 +53,8 @@ export default function RouteEditor() {
     onConnect: s.onConnect,
     publishRoute: s.publishRoute,
     addNode: s.addNode,
+    addInspectionNode: s.addInspectionNode,
+    validateInspectionNodes: s.validateInspectionNodes,
     selectNode: s.selectNode,
   }));
 
@@ -99,6 +101,9 @@ export default function RouteEditor() {
   );
   const handleDropNode = useCallback(
     (pid: number, pos: { x: number; y: number }) => editor.addNode(pid, pos), [],
+  );
+  const handleDropInspectionNode = useCallback(
+    (pos: { x: number; y: number }) => editor.addInspectionNode(pos), [],
   );
   const handleBack = useCallback(
     () => navigate("/routes"), [navigate],
@@ -154,7 +159,14 @@ export default function RouteEditor() {
     .filter((p) => p.category === "custom")
     .map((p) => p.code);
 
+  const [inspectionWarnShown, setInspectionWarnShown] = useState(false);
+
   const handleSave = useCallback(() => {
+    // 质检节点校验：每个质检节点必须有 2 条出线
+    if (!editor.validateInspectionNodes()) {
+      setInspectionWarnShown(true);
+      return;
+    }
     version.setSaveChangeDescription?.("");
     version.setSaveDialogOpen?.(true);
   }, []);
@@ -290,6 +302,7 @@ export default function RouteEditor() {
             onNodeDoubleClick={handleNodeDblClick}
             onPaneClick={handlePaneClick}
             onDropNode={handleDropNode}
+            onDropInspectionNode={handleDropInspectionNode}
             readonly={readonly}
           />
         )}
@@ -376,6 +389,28 @@ export default function RouteEditor() {
               <button
                 className="dialog__btn dialog__btn--cancel"
                 onClick={() => setDeleteBlockedInfo(null)}
+              >
+                我知道了
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 质检节点校验警告弹窗 */}
+      {inspectionWarnShown && (
+        <div className="dialog-overlay" onClick={() => setInspectionWarnShown(false)}>
+          <div className="dialog" onClick={(e) => e.stopPropagation()} style={{ width: 400 }}>
+            <h3 className="dialog__title">⚠️ 质检节点不完整</h3>
+            <div className="dialog__body">
+              <p style={{ margin: 0 }}>
+                存在质检节点缺少输出连线，请确保每个质检节点都有「通过」和「不通过」两条出线。
+              </p>
+            </div>
+            <div className="dialog__footer">
+              <button
+                className="dialog__btn dialog__btn--confirm"
+                onClick={() => setInspectionWarnShown(false)}
               >
                 我知道了
               </button>

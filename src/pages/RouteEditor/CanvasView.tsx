@@ -7,6 +7,7 @@ import {
   MiniMap,
   type Node,
   type NodeTypes,
+  type EdgeTypes,
   type OnNodesChange,
   type OnEdgesChange,
   type OnConnect,
@@ -16,11 +17,18 @@ import "@xyflow/react/dist/style.css";
 import ProcessNode from "./nodes/ProcessNode";
 import StartNode from "./nodes/StartNode";
 import EndNode from "./nodes/EndNode";
+import InspectionNode from "./nodes/InspectionNode";
+import InspectionEdge from "./edges/InspectionEdge";
 
 const nodeTypes: NodeTypes = {
   process: ProcessNode,
   start: StartNode,
   end: EndNode,
+  inspection: InspectionNode,
+};
+
+const edgeTypes: EdgeTypes = {
+  inspection: InspectionEdge,
 };
 
 interface CanvasViewProps {
@@ -33,6 +41,7 @@ interface CanvasViewProps {
   onNodeDoubleClick: (event: any, node: Node) => void;
   onPaneClick: () => void;
   onDropNode: (processId: number, position: { x: number; y: number }) => void;
+  onDropInspectionNode?: (position: { x: number; y: number }) => void;
   readonly?: boolean;
 }
 
@@ -46,6 +55,7 @@ export default function CanvasView({
   onNodeDoubleClick,
   onPaneClick,
   onDropNode,
+  onDropInspectionNode,
   readonly = false,
 }: CanvasViewProps) {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -63,14 +73,19 @@ export default function CanvasView({
       if (!data || !reactFlowInstance.current || !reactFlowWrapper.current)
         return;
 
-      const { processId } = JSON.parse(data);
+      const parsed = JSON.parse(data);
       const position = reactFlowInstance.current.screenToFlowPosition({
         x: event.clientX,
         y: event.clientY,
       });
-      onDropNode(processId, position);
+
+      if (parsed.type === "inspection") {
+        onDropInspectionNode?.(position);
+      } else if (parsed.processId) {
+        onDropNode(parsed.processId, position);
+      }
     },
-    [onDropNode],
+    [onDropNode, onDropInspectionNode],
   );
 
   return (
@@ -90,6 +105,7 @@ export default function CanvasView({
           reactFlowInstance.current = instance;
         }}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         fitView
         selectionMode={SelectionMode.Partial}
         nodesDraggable={!readonly}

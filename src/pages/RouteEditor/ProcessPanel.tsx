@@ -182,6 +182,28 @@ export default function ProcessPanel({
             </ul>
           )}
         </div>
+
+        {/* 特殊节点分组 */}
+        <div className="process-panel__group">
+          <div className="process-panel__group-title">特殊节点</div>
+          <ul className="process-panel__list">
+            <li
+              className="process-panel__item process-panel__item--inspection"
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(
+                  "application/json",
+                  JSON.stringify({ type: "inspection" }),
+                );
+                e.dataTransfer.effectAllowed = "copy";
+              }}
+            >
+              <span className="process-panel__item-icon">🔍</span>
+              <span className="process-panel__item-name">质检节点</span>
+              <span className="process-panel__item-drag-hint">拖拽</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </aside>
   );
