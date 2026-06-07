@@ -8,3 +8,10 @@ dist-electron/
 .env.local
 .DS_Store
 *.log
+# Build outputs
+react/out/
+# Tool configs & lock files
+.clawhub/
+.learnings/
+.reasonix/
+.codegraph/

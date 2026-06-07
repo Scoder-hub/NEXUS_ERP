@@ -5,9 +5,9 @@
 ---
 
 ## 项目身份
-- **项目**：NEXUS ERP — 面向陶瓷制造企业的桌面端全流程资源管理系统
+- **项目**：NEXUS ERP — 开源 ERP 演示系统（Electron + React）
 - **根目录**：`~/Desktop/ai/`（React 前端在 `react/` 子目录）
-- **版本**：v0.1.0（已发布），当前开发 v0.2.0
+- **版本**：v0.1.0
 - **构建**：`npm run dev`（开发）/ `npm run build`（构建）
 
 ---
@@ -61,7 +61,7 @@ react/
 
 ### 通用
 - 单文件 ≤ 300 行，超过必须拆分
-- TypeScript 严格模式，禁止 `any`（当前31个豁免）
+- TypeScript 严格模式，禁止 `any`
 - ESLint + Prettier 自动格式化
 - 路径别名：`@/` → `src/renderer/`, `@shared/` → `src/shared/`, `@db/` → `src/db/`
 

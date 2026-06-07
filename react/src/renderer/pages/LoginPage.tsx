@@ -51,8 +51,8 @@ const LoginPage: React.FC = () => {
 
   const features = [
     { Icon: ZapIcon, text: `智能生产调度`, color: 'var(--color-accent-dashboard)' },
-    { Icon: ShieldIcon, text: `企业级数据安全`, color: 'var(--color-accent-purchase)' },
-    { Icon: GlobeIcon, text: `多语言全球协同`, color: 'var(--color-accent-sales)' },
+    { Icon: ShieldIcon, text: `数据安全`, color: 'var(--color-accent-purchase)' },
+    { Icon: GlobeIcon, text: `多语言支持`, color: 'var(--color-accent-sales)' },
   ];
 
   return (
@@ -86,18 +86,17 @@ const LoginPage: React.FC = () => {
             </div>
             <div>
               <div className="text-lg font-black tracking-wider text-foreground">NEXUS ERP</div>
-              <div className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Enterprise Resource Planning</div>
+              <div className="text-xs" style={{ color: 'var(--muted-foreground)' }}>Open Source ERP Platform</div>
             </div>
           </div>
           <h1 className="text-3xl font-bold text-foreground leading-tight mb-3">
-            驱动企业
-            <br />
+            驱动<br />
             <span style={{ background: 'var(--color-gradient-text)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              数字化转型
+              数字化转型演示
             </span>
           </h1>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--muted-foreground)', maxWidth: 280 }}>
-            集成采购、生产、销售、财务、人力资源于一体的新一代智能 ERP 平台
+            集成采购、生产、销售、财务、人力资源于一体的开源 ERP 演示平台
           </p>
         </div>
 
@@ -116,7 +115,7 @@ const LoginPage: React.FC = () => {
 
         {/* Bottom version */}
         <div className="relative z-10 text-xs" style={{ color: 'var(--muted-foreground)' }}>
-          NEXUS ERP v3.2.1 · © 2024 Nexus Technologies
+          NEXUS ERP Demo · Open Source
         </div>
       </div>
 
@@ -133,8 +132,8 @@ const LoginPage: React.FC = () => {
 
         <div className="w-full" style={{ maxWidth: 400 }}>
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-1">欢迎登录</h2>
-            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>请输入您的账号信息以访问系统</p>
+            <h2 className="text-2xl font-bold text-foreground mb-1">欢迎</h2>
+            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>输入账号信息以访问演示系统</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)}>

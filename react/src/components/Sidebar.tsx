@@ -136,7 +136,7 @@ const Sidebar: React.FC<SidebarProps> = ({
         </div>
         <div className={collapsed ? 'hidden' : 'block'}>
           <div className="text-sm font-bold gradient-text tracking-wider">NEXUS ERP</div>
-          <div className="text-xs" style={{ color: 'var(--theme-nav-inactive-text)' }}>Enterprise System</div>
+          <div className="text-xs" style={{ color: 'var(--theme-nav-inactive-text)' }}>Open Source Demo</div>
         </div>
       </div>
 
