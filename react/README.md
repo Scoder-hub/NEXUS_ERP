@@ -1,73 +1,111 @@
-# React + TypeScript + Vite
+# NEXUS ERP
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> AI 辅助开发练手项目 — 用 AI Agent 协作开发一个桌面端 ERP 系统
 
-Currently, two official plugins are available:
+本项目是一个**探索性实践**：全程借助 AI 编程助手（Claude Code）作为协作开发伙伴，模拟从 PRD 到发布的完整团队协作流程。项目本身是一个陶瓷制造 ERP 系统的原型，但真正的产出是**这套 AI 协作方法论**。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 项目设定
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 业务背景
+陶瓷制造企业的全流程资源管理系统，覆盖：制泥 → 成型 → 修坯 → 上釉 → 烧成 → 胶装 → 试验 → 包装八大工序。
 
-## Expanding the ESLint configuration
+### 技术选型
+| 层 | 技术 | 为什么选 |
+|---|---|---|
+| 桌面框架 | Electron 36 | 桌面端原生体验 |
+| 前端框架 | React 19 + TypeScript 5.9 | 生态成熟，类型安全 |
+| 构建 | electron-vite 5 | 三入口分离（主进程/预加载/渲染进程） |
+| UI 体系 | Tailwind CSS 4 + shadcn/ui + Radix UI | 组件即用，设计一致 |
+| 状态管理 | Zustand 5 | 轻量、persist 中间件 |
+| 数据库 | better-sqlite3 + Drizzle ORM | 本地优先，SQLite 零部署 |
+| 国际化 | i18next 25 | 6 种语言 |
+| 测试 | Playwright 1.60 | E2E 自动验证 |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## AI 协作设计
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 8 角色流水线
+项目模拟了一个完整的团队流水线，每个角色由 AI 代理承担：
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+PM → UX 设计师 → 架构师 → 开发者 → 审查员 → QA → 线上测试 → DevOps
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- 每个角色有明确的**职责边界**（做什么/不做什么）
+- 输出物固定（PRD → 设计文档 → 代码 → 审查报告 → 测试报告 → 发布记录）
+- **仅 PRD 需要人工审批**，通过后全流程自动流转
+- 支持 5 种流程模式：完整 / 标准 / Bug 修复 / 轻量 / 热修复
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 流程选择
+根据变更范围自动选择：
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- 新功能/数据模型变更 → **完整流程**（8 角色全走）
+- 跨模块影响 → **标准流程**（可跳过无关角色）
+- Bug 修复 → **Bug 修复流程**（开发者→审查员→QA）
+- 小改动（≤3 文件） → **轻量流程**（开发者→审查员）
+- 生产紧急故障 → **热修复流程**（开发者→QA→DevOps）
+
+### 发布门禁（5 Gates）
+每次发布必须完成 5 项检查并有证据产出：
+
+| Gate | 产出文档 |
+|---|---|
+| 功能正确性 | test-report.md |
+| UI/交互质量 | release-test-report.md |
+| 安全基线 | security-report.md |
+| 性能基线 | performance-report.md |
+| 完成度盘点 | feature-scan-report.md + feature-inventory.md |
+
+执行率 < 100% 不允许宣称发布完成。
+
+---
+
+## 经验总结
+
+### 什么做得好
+
+1. **角色分工清晰**：每个角色的输入/输出/边界明确，AI 不会越界做事，减少了上下文混乱
+2. **流水线自动化**：PRD 审批后全流程自动流转，不需要人工逐个触发
+3. **文档驱动**：每个阶段的产出物固定为文档，既沉淀了知识，也给下一角色提供了上下文
+4. **门禁机制有效**：5 Gates 确保了发布的底线质量，避免"重构完了发现没测试"
+
+### 什么要注意
+
+1. **Token 消耗大**：完整流程跑下来消耗大量 Token（特别是 PRD 和设计文档阶段）。建议大变更用完整流程，小修小改用轻量流程
+2. **AI 角色边界不是绝对的**：AI 开发者偶尔会"自作主张"改方案 — 需要审查员角色把关
+3. **上下文窗口管理**：长流水线后期，前面的决策容易被遗忘。关键决策一定要写入文档
+4. **AI 测试不能完全替代人工**：E2E 测试通过不代表业务逻辑正确，复杂场景仍需人工验证
+5. **进化机制有价值但需要维护**：自进化日志如果不能定期回顾清理，容易积累冗余规则
+
+### 适合谁用
+
+- 想了解 **AI Agent 协作模式**的开发者
+- 想体验 **Electron + React 19 现代桌面开发**的前端工程师
+- 对 **陶瓷制造 ERP 业务逻辑**感兴趣的人
+- 想用 AI 快速原型验证产品想法的 PM/创业者
+
+### 不适合谁用
+
+- 需要生产级 ERP 的企业（这是演示/练手项目，不保证数据安全和高可用）
+- 不想处理 AI 生成代码的审查成本的人
+
+---
+
+## 快速开始
+
+```bash
+cd react
+npm install
+npm run dev
 ```
+
+启动后访问 `http://localhost:5173`，默认管理员账号 `admin` / `admin123`。
+
+---
+
+## 许可
+
+MIT License — 本项目仅用于学习和演示目的。
