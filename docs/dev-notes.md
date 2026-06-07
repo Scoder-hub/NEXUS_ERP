@@ -1,4 +1,4 @@
-# Porcelain ERP 开发笔记
+# NEXUS ERP 开发笔记
 
 ## 踩坑记录
 

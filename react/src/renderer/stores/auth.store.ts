@@ -111,7 +111,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       },
     }),
     {
-      name: 'porcelain-auth-storage',
+      name: 'nexus-auth-storage',
       partialize: (state) => ({ token: state.token }),
     }
   )

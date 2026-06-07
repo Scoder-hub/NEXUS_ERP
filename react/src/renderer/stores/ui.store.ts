@@ -52,7 +52,7 @@ export const useUiStore = create<UiState & UiActions>()(
       setActivePage: (activePage) => set({ activePage }),
     }),
     {
-      name: 'porcelain-ui-storage',
+      name: 'nexus-ui-storage',
       partialize: (state) => ({ theme: state.theme, sidebarCollapsed: state.sidebarCollapsed, language: state.language }),
     }
   )

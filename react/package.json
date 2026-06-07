@@ -1,5 +1,5 @@
 {
-  "name": "porcelain-erp",
+  "name": "nexus-erp",
   "private": true,
   "version": "0.1.0",
   "main": "./out/main/index.js",
@@ -99,8 +99,8 @@
     "vite-plugin-checker": "^0.12.0"
   },
   "build": {
-    "appId": "com.porcelain-erp.app",
-    "productName": "Porcelain ERP",
+    "appId": "com.nexus-erp.app",
+    "productName": "NEXUS ERP",
     "directories": {
       "output": "dist-electron"
     },

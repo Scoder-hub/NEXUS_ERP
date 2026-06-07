@@ -40,7 +40,7 @@ export function seedInitialData(db: Database.Database) {
     const passwordHash = bcrypt.hashSync('admin123', 10);
     db.prepare(`
       INSERT INTO users (username, password_hash, name, email, status)
-      VALUES ('admin', ?, '系统管理员', 'admin@porcelain-erp.com', 'active')
+      VALUES ('admin', ?, '系统管理员', 'admin@nexus-erp.com', 'active')
     `).run(passwordHash);
 
     // 5. 分配超级管理员角色

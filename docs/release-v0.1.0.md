@@ -1,4 +1,4 @@
-# Porcelain ERP v0.1.0 发布记录
+# NEXUS ERP v0.1.0 发布记录
 
 ## 版本信息
 
@@ -44,8 +44,8 @@
 
 ### 构建配置
 
-- **appId**: com.porcelain-erp.app
-- **productName**: Porcelain ERP
+- **appId**: com.nexus-erp.app
+- **productName**: NEXUS ERP
 - **输出目录**: dist-electron
 - **macOS 目标**: dmg, zip
 - **Windows 目标**: nsis, portable

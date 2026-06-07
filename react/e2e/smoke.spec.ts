@@ -3,7 +3,7 @@ import { readFileSync, mkdirSync } from 'fs';
 
 const SCREENSHOT_DIR = 'e2e/screenshots';
 
-test.describe('Porcelain ERP 冒烟测试', () => {
+test.describe('NEXUS ERP 冒烟测试', () => {
   test.beforeAll(() => {
     mkdirSync(SCREENSHOT_DIR, { recursive: true });
   });

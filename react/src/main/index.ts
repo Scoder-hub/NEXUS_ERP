@@ -21,7 +21,7 @@ function createWindow() {
     minWidth: 1280,
     minHeight: 720,
     show: false,
-    title: 'Porcelain ERP',
+    title: 'NEXUS ERP',
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -60,7 +60,7 @@ app.whenReady().then(async () => {
   }
 
   // 初始化数据库
-  const dbPath = path.join(app.getPath('userData'), 'porcelain-erp.db');
+  const dbPath = path.join(app.getPath('userData'), 'nexus-erp.db');
   initDatabase(dbPath);
 
   // 注册 IPC handlers

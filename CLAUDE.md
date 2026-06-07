@@ -1,11 +1,11 @@
-# Porcelain ERP — CLAUDE.md
+# NEXUS ERP — CLAUDE.md
 
 > 项目级 AI 协作规范。优先级：本文件 > 用户偏好 > 默认行为。
 
 ---
 
 ## 项目身份
-- **项目**：Porcelain ERP — 面向陶瓷制造企业的桌面端全流程资源管理系统
+- **项目**：NEXUS ERP — 面向陶瓷制造企业的桌面端全流程资源管理系统
 - **根目录**：`~/Desktop/ai/`（React 前端在 `react/` 子目录）
 - **版本**：v0.1.0（已发布），当前开发 v0.2.0
 - **构建**：`npm run dev`（开发）/ `npm run build`（构建）

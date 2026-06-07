@@ -392,7 +392,7 @@ function seedInitialData(db) {
     const passwordHash = bcrypt.hashSync("admin123", 10);
     db.prepare(`
       INSERT INTO users (username, password_hash, name, email, status)
-      VALUES ('admin', ?, '系统管理员', 'admin@porcelain-erp.com', 'active')
+      VALUES ('admin', ?, '系统管理员', 'admin@nexus-erp.com', 'active')
     `).run(passwordHash);
     db.prepare("INSERT INTO user_roles (user_id, role_id) VALUES (1, 1)").run();
     db.prepare(`
@@ -2583,7 +2583,6 @@ function registerIpcHandlers() {
   registerHrIpc();
   registerReportIpc();
 }
-const installExtension = import("./index-CG7qDT-j.js").then((n) => n.i).then((m) => m.default);
 let mainWindow = null;
 app.commandLine.appendSwitch("disable-gpu-sandbox");
 function createWindow() {
@@ -2593,7 +2592,7 @@ function createWindow() {
     minWidth: 1280,
     minHeight: 720,
     show: false,
-    title: "Porcelain ERP",
+    title: "NEXUS ERP",
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
@@ -2615,17 +2614,7 @@ function createWindow() {
   }
 }
 app.whenReady().then(async () => {
-  if (installExtension) {
-    try {
-      const install = await installExtension;
-      const REACT_DEVELOPER_TOOLS = "fmkadmapgofadopljbjfkapdkoienihi";
-      await install(REACT_DEVELOPER_TOOLS);
-      console.log("[DevTools] React Developer Tools 已加载");
-    } catch (err) {
-      console.warn("[DevTools] React Developer Tools 加载失败:", err);
-    }
-  }
-  const dbPath = path.join(app.getPath("userData"), "porcelain-erp.db");
+  const dbPath = path.join(app.getPath("userData"), "nexus-erp.db");
   initDatabase(dbPath);
   registerIpcHandlers();
   createWindow();

@@ -1,4 +1,4 @@
-# Porcelain ERP 设计文档
+# NEXUS ERP 设计文档
 
 > 文档版本：v1.0
 > 创建日期：2026-06-07
@@ -1031,7 +1031,7 @@ stateDiagram-v2
 ### 1.2 目录结构设计
 
 ```
-porcelain-erp/
+nexus-erp/
 ├── electron.vite.config.ts          # electron-vite 配置
 ├── package.json
 ├── tsconfig.json
@@ -1357,7 +1357,7 @@ import * as schema from './schema';
 import { app } from 'electron';
 import path from 'path';
 
-const dbPath = path.join(app.getPath('userData'), 'porcelain-erp.db');
+const dbPath = path.join(app.getPath('userData'), 'nexus-erp.db');
 const sqlite = new Database(dbPath);
 
 // WAL 模式提升并发读性能
@@ -2701,7 +2701,7 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
 const SALT_ROUNDS = 10;
-const TOKEN_SECRET = process.env.TOKEN_SECRET || 'porcelain-erp-default-secret';
+const TOKEN_SECRET = process.env.TOKEN_SECRET || 'nexus-erp-default-secret';
 const TOKEN_EXPIRY = 7 * 24 * 60 * 60 * 1000; // 7 天
 
 // 密码哈希
@@ -3047,7 +3047,7 @@ let dbInstance: ReturnType<typeof drizzle> | null = null;
 let sqliteInstance: Database.Database | null = null;
 
 export function initDatabase() {
-  const dbPath = path.join(app.getPath('userData'), 'porcelain-erp.db');
+  const dbPath = path.join(app.getPath('userData'), 'nexus-erp.db');
   const migrationsPath = path.join(__dirname, '../db/migrate');
 
   sqliteInstance = new Database(dbPath);
@@ -3124,7 +3124,7 @@ export function seedInitialData(db: Database.Database) {
     const passwordHash = bcrypt.hashSync('admin123', 10);
     db.prepare(`
       INSERT INTO users (username, password_hash, name, email, status)
-      VALUES ('admin', ?, '系统管理员', 'admin@porcelain-erp.com', 'active')
+      VALUES ('admin', ?, '系统管理员', 'admin@nexus-erp.com', 'active')
     `).run(passwordHash);
 
     // 5. 分配超级管理员角色

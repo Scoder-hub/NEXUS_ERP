@@ -1,4 +1,4 @@
-# Porcelain ERP v0.1.0 代码审查报告
+# NEXUS ERP v0.1.0 代码审查报告
 
 **审查日期**：2026-06-07
 **审查员**：Code Reviewer
@@ -133,7 +133,7 @@
 
 | # | 严重度 | 问题描述 | 位置 |
 |---|---|---|---|
-| S-01 | **Critical** | `crypto.ts` 中 `TOKEN_SECRET` 使用硬编码默认值 `'porcelain-erp-secret-key-2026'`，生产环境中如果未设置环境变量，Token 可被伪造 | `src/main/utils/crypto.ts:5` |
+| S-01 | **Critical** | `crypto.ts` 中 `TOKEN_SECRET` 使用硬编码默认值 `'nexus-erp-secret-key-2026'`，生产环境中如果未设置环境变量，Token 可被伪造 | `src/main/utils/crypto.ts:5` |
 | S-02 | **Critical** | `crypto.ts` 中 `scryptSync` 的 salt 使用硬编码值 `'porcelain-salt'`，降低了 Token 加密的安全性 | `src/main/utils/crypto.ts:22,34` |
 | S-03 | **Major** | `auth.service.ts` 中 PIN 码以明文存储在数据库中，未进行哈希处理 | `src/main/services/auth.service.ts:121` |
 | S-04 | **Major** | `initial-data.ts` 中默认管理员密码为 `admin123`，且 bcrypt 的 salt rounds 使用硬编码值 10 而非常量 `SALT_ROUNDS` | `src/db/seed/initial-data.ts:40` |

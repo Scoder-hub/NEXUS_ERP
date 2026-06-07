@@ -22977,7 +22977,7 @@ const useAuthStore = create()(
       }
     }),
     {
-      name: "porcelain-auth-storage",
+      name: "nexus-auth-storage",
       partialize: (state) => ({ token: state.token })
     }
   )
@@ -23007,7 +23007,7 @@ const useUiStore = create()(
       setActivePage: (activePage) => set2({ activePage })
     }),
     {
-      name: "porcelain-ui-storage",
+      name: "nexus-ui-storage",
       partialize: (state) => ({ theme: state.theme, sidebarCollapsed: state.sidebarCollapsed, language: state.language })
     }
   )
