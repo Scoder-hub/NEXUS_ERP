@@ -1,0 +1,77 @@
+{
+  "routes": [
+    {
+      "path": "/",
+      "src": "src/pages/Index.tsx"
+    },
+    {
+      "path": "/production-plan",
+      "src": "src/pages/ProductionPlanPage.tsx"
+    },
+    {
+      "path": "/workshop-exec",
+      "src": "src/pages/WorkshopExecPage.tsx"
+    },
+    {
+      "path": "/production-dashboard",
+      "src": "src/pages/ProductionDashboardPage.tsx"
+    }
+  ],
+  "components": [
+    {
+      "name": "ActivityFeed",
+      "src": "src/components/ActivityFeed.tsx",
+      "route": "/preview/activity-feed"
+    },
+    {
+      "name": "AuroraBackground",
+      "src": "src/components/AuroraBackground.tsx",
+      "route": "/preview/aurora-background"
+    },
+    {
+      "name": "KpiCardRow",
+      "src": "src/components/KpiCardRow.tsx",
+      "route": "/preview/kpi-card-row"
+    },
+    {
+      "name": "LanguageSwitcher",
+      "src": "src/components/LanguageSwitcher.tsx",
+      "route": "/preview/language-switcher"
+    },
+    {
+      "name": "LockScreen",
+      "src": "src/components/LockScreen.tsx",
+      "route": "/preview/lock-screen"
+    },
+    {
+      "name": "MiniDonutChart",
+      "src": "src/components/MiniDonutChart.tsx",
+      "route": "/preview/mini-donut-chart"
+    },
+    {
+      "name": "OrderTable",
+      "src": "src/components/OrderTable.tsx",
+      "route": "/preview/order-table"
+    },
+    {
+      "name": "RevenueChart",
+      "src": "src/components/RevenueChart.tsx",
+      "route": "/preview/revenue-chart"
+    },
+    {
+      "name": "Sidebar",
+      "src": "src/components/Sidebar.tsx",
+      "route": "/preview/sidebar"
+    },
+    {
+      "name": "SystemStatus",
+      "src": "src/components/SystemStatus.tsx",
+      "route": "/preview/system-status"
+    },
+    {
+      "name": "TopBar",
+      "src": "src/components/TopBar.tsx",
+      "route": "/preview/top-bar"
+    }
+  ]
+}

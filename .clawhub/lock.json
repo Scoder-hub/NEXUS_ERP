@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "self-improving-agent": {
+      "version": "3.0.23",
+      "installedAt": 1780838742341
+    },
+    "proactive-agent": {
+      "version": "3.1.0",
+      "installedAt": 1780838811371
+    },
+    "skill-vetter": {
+      "version": "1.0.0",
+      "installedAt": 1780838815776
+    },
+    "auto-updater": {
+      "version": "1.0.0",
+      "installedAt": 1780838819524
+    },
+    "multi-search-engine": {
+      "version": "2.1.3",
+      "installedAt": 1780838861969
+    },
+    "github": {
+      "version": "1.0.0",
+      "installedAt": 1780838926502
+    }
+  }
+}

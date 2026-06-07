@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "strict": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist/main",
+    "baseUrl": ".",
+    "paths": {
+      "@shared/*": ["./src/shared/*"],
+      "@db/*": ["./src/db/*"]
+    }
+  },
+  "include": ["src/main/**/*", "src/preload/**/*", "src/db/**/*", "src/shared/**/*"]
+}
