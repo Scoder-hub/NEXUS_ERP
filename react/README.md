@@ -6,6 +6,19 @@
 
 ---
 
+## 📖 项目文档导航
+
+| 文档 | 内容 |
+|------|------|
+| [`docs/AI协作规则树_v4.1.md`](/docs/AI%E5%8D%8F%E4%BD%9C%E8%A7%84%E5%88%99%E6%A0%91_v4.1.md) | 通用 AI 协作规则（角色分工、流程选择、Gates、自我进化） |
+| [`docs/prd.md`](/docs/prd.md) | 产品需求文档（17 模块、142 业务规则） |
+| [`docs/design.md`](/docs/design.md) | UX 设计 + 技术架构 |
+| [`docs/dev-tasks.md`](/docs/dev-tasks.md) | 开发任务看板 |
+| [`docs/dev-notes.md`](/docs/dev-notes.md) | 踩坑记录、延期决策、知识沉淀 |
+| [`docs/质量保障体系/`](/docs/%E8%B4%A8%E9%87%8F%E4%BF%9D%E9%9A%9C%E4%BD%93%E7%B3%BB/) | 线上测试、安全、性能、自动化扫描方案 |
+
+---
+
 ## 项目设定
 
 ### 业务背景
