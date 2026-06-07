@@ -2583,6 +2583,7 @@ function registerIpcHandlers() {
   registerHrIpc();
   registerReportIpc();
 }
+const installExtension = import("./index-CG7qDT-j.js").then((n) => n.i).then((m) => m.default);
 let mainWindow = null;
 app.commandLine.appendSwitch("disable-gpu-sandbox");
 function createWindow() {
@@ -2614,6 +2615,16 @@ function createWindow() {
   }
 }
 app.whenReady().then(async () => {
+  if (installExtension) {
+    try {
+      const install = await installExtension;
+      const REACT_DEVELOPER_TOOLS = "fmkadmapgofadopljbjfkapdkoienihi";
+      await install(REACT_DEVELOPER_TOOLS);
+      console.log("[DevTools] React Developer Tools 已加载");
+    } catch (err) {
+      console.warn("[DevTools] React Developer Tools 加载失败:", err);
+    }
+  }
   const dbPath = path.join(app.getPath("userData"), "porcelain-erp.db");
   initDatabase(dbPath);
   registerIpcHandlers();
