@@ -127,7 +127,7 @@ Code Review → QA测试 → 线上测试 → 发布
 |------|------|
 | `docs/prd.md` | 产品需求（17模块、142业务规则） |
 | `docs/design.md` | UX设计 + 技术架构（3404行） |
-| `docs/AI协作规则树_v4.1.md` | 团队规则、Gates、进化机制 |
+| `docs/AI协作规则树_v4.1.md` | 通用 AI 协作规则（适用于各类开发环境） |
 | `docs/dev-tasks.md` | 任务看板 |
 | `docs/dev-notes.md` | 踩坑记录、延期决策 |
 | `docs/feature-inventory.md` | 功能完成度清单 |
